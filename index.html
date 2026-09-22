@@ -1,0 +1,4658 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <link rel="stylesheet" href="css/L.Control.Layers.Tree.css" />
+    <link rel="stylesheet" href="css/qgis2web.css" />
+    <link rel="stylesheet" href="css/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="css/leaflet.photon.css" />
+    <style>
+      html {
+        min-height: 100%;
+        height: auto !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        margin: 0;
+        min-height: 100vh;
+        height: auto !important;
+        display: block !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+      }
+      /* Legenda warna dinamis */
+      #legendaPeta {
+        position: absolute;
+        z-index: 1000;
+        left: 12px;
+        bottom: 12px;
+        width: 220px;
+        box-sizing: border-box;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #d6d6d6;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        font-size: 12px;
+        color: #222;
+      }
+      #legendaPeta .legenda-judul {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+      #legendaPeta .legenda-gradient {
+        height: 17px;
+        width: 100%;
+        border-radius: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-sizing: border-box;
+      }
+      #legendaPeta .legenda-nilai {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 5px;
+        font-size: 12px;
+      }
+      #legendaPeta .legenda-kategori {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      #legendaPeta .legenda-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      #legendaPeta .legenda-warna {
+        width: 18px;
+        height: 13px;
+        flex: 0 0 18px;
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        border-radius: 2px;
+        box-sizing: border-box;
+      }
+
+      /* Sembunyikan kontrol layer bawaan qgis2web (ikon tumpukan layer). */
+      .leaflet-control-layers,
+      .leaflet-control-layers-toggle {
+        display: none !important;
+      }
+
+      /* Kontainer Utama Dashboard */
+      .dashboard-container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 20px auto 40px auto;
+        box-sizing: border-box;
+      }
+      /* Gaya untuk Panel Pilihan (Dropdown) */
+      .kontrol-panel {
+        background-color: #e8f0f8;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        border-left: 4px solid #3b82f6;
+      }
+      .kontrol-panel label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .kontrol-panel select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+      }
+      /* Peta diubah agar responsif mengikuti kontainer */
+      #map {
+        width: 100%;
+        height: 635px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      /* Gaya untuk Panel Deskripsi */
+      .deskripsi-panel {
+        background-color: #e8f0f8;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 15px;
+        border-left: 4px solid #3b82f6;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+      }
+      .deskripsi-judul {
+        font-weight: bold;
+        font-size: 16px;
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+
+
+      /* =========================================================
+         TEMPLATE DASHBOARD 3 MENU
+         ========================================================= */
+      .dashboard-container {
+        width: min(1180px, 94%);
+        max-width: 1180px;
+        margin: 0 auto 48px auto;
+      }
+
+      .dashboard-header {
+        margin: 0 -3.2% 0 -3.2%;
+        padding: 26px 4% 0 4%;
+        background: linear-gradient(135deg, #0f766e 0%, #155e75 100%);
+        color: #fff;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+        box-shadow: 0 4px 16px rgba(0,0,0,.12);
+      }
+      .dashboard-kicker {
+        margin: 0 0 6px;
+        font-size: 12px;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        opacity: .85;
+        font-weight: 700;
+      }
+      .dashboard-title {
+        margin: 0;
+        font-size: clamp(24px, 4vw, 34px);
+        line-height: 1.15;
+        font-weight: 800;
+      }
+      .dashboard-subtitle {
+        margin: 9px 0 22px;
+        max-width: 850px;
+        line-height: 1.6;
+        font-size: 14px;
+        opacity: .92;
+      }
+      .dashboard-nav {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: end;
+      }
+      .dashboard-nav button {
+        appearance: none;
+        border: 0;
+        background: rgba(255,255,255,.12);
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 10px 10px 0 0;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        transition: background .18s ease, transform .18s ease;
+      }
+      .dashboard-nav button:hover { background: rgba(255,255,255,.2); }
+      .dashboard-nav button.active {
+        background: #fff;
+        color: #155e75;
+      }
+
+      .dashboard-main { padding-top: 24px; }
+      .dashboard-section { display: none; animation: dashboardFade .2s ease; }
+      .dashboard-section.active { display: block; }
+      @keyframes dashboardFade { from { opacity: .2; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+      .hero-card, .content-card, .method-card, .result-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(15,23,42,.06);
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      .hero-card h2, .content-card h2, .method-card h2, .result-card h2 {
+        margin: 0 0 10px;
+        color: #0f172a;
+        font-size: 20px;
+      }
+      .hero-card p, .content-card p, .method-card p, .result-card p {
+        color: #475569;
+        line-height: 1.7;
+      }
+      .section-lead { margin-top: 0; }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+      }
+      .info-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .info-card strong { display:block; color:#0f172a; margin-bottom:5px; }
+      .info-card span { color:#64748b; font-size:13px; line-height:1.5; }
+
+      .data-table-wrap { overflow-x: auto; margin-top: 12px; }
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        min-width: 640px;
+      }
+      .data-table th, .data-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+        vertical-align: top;
+      }
+      .data-table th { background:#f8fafc; color:#334155; font-weight:700; }
+      .data-table td { color:#475569; }
+
+      .method-flow {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0,1fr));
+        gap: 10px;
+        margin-top: 16px;
+      }
+      .method-step {
+        position: relative;
+        background:#f0fdfa;
+        border:1px solid #ccfbf1;
+        border-radius:12px;
+        padding:14px 12px;
+        text-align:center;
+        color:#134e4a;
+        font-size:13px;
+        font-weight:700;
+      }
+      .method-step:not(:last-child)::after {
+        content:'→';
+        position:absolute;
+        right:-12px;
+        top:50%;
+        transform:translateY(-50%);
+        color:#94a3b8;
+        font-size:18px;
+        z-index:2;
+      }
+
+      .workspace {
+        background:#fff;
+        border:1px solid #e2e8f0;
+        border-radius:14px;
+        box-shadow:0 3px 12px rgba(15,23,42,.06);
+        padding:18px;
+      }
+      .workspace-head {
+        display:flex;
+        justify-content:space-between;
+        gap:14px;
+        align-items:flex-start;
+        margin-bottom:14px;
+      }
+      .workspace-head h2 { margin:0 0 5px; color:#0f172a; font-size:21px; }
+      .workspace-head p { margin:0; color:#64748b; line-height:1.5; font-size:13px; }
+      .workspace-badge {
+        flex:0 0 auto;
+        background:#ecfeff;
+        color:#155e75;
+        border:1px solid #cffafe;
+        border-radius:999px;
+        padding:7px 11px;
+        font-size:12px;
+        font-weight:700;
+      }
+
+      .result-tabs {
+        display:flex;
+        gap:8px;
+        margin-bottom:14px;
+      }
+      .result-tab {
+        border:1px solid #cbd5e1;
+        background:#fff;
+        color:#475569;
+        padding:9px 14px;
+        border-radius:9px;
+        cursor:pointer;
+        font-weight:700;
+        font-size:13px;
+      }
+      .result-tab.active { background:#0f766e; color:#fff; border-color:#0f766e; }
+      .result-pane { display:none; }
+      .result-pane.active { display:block; }
+
+      .result-summary {
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:12px;
+        margin-bottom:14px;
+      }
+      .result-summary .metric {
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        border-radius:11px;
+        padding:13px;
+      }
+      .metric-label { color:#64748b; font-size:12px; margin-bottom:5px; }
+      .metric-value { color:#0f172a; font-size:16px; font-weight:800; }
+
+      .dashboard-note {
+        background:#fffbeb;
+        border:1px solid #fde68a;
+        color:#78350f;
+        border-radius:10px;
+        padding:12px 14px;
+        font-size:13px;
+        line-height:1.55;
+      }
+      .dashboard-footer-note {
+        color:#64748b;
+        font-size:12px;
+        line-height:1.5;
+        margin-top:8px;
+      }
+
+      @media (max-width: 800px) {
+        .dashboard-container { width: 94%; }
+        .dashboard-header { margin-left:-3.2%; margin-right:-3.2%; padding-left:4%; padding-right:4%; }
+        .info-grid, .result-summary { grid-template-columns:1fr; }
+        .method-flow { grid-template-columns:1fr; }
+        .method-step:not(:last-child)::after { content:'↓'; right:auto; top:auto; bottom:-14px; left:50%; transform:translateX(-50%); }
+        .workspace-head { flex-direction:column; }
+        #map { height: 520px; }
+      }
+
+    </style>
+    <title>Dashboard E2SFCA &amp; LISA</title>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <p class="dashboard-kicker">Dashboard Visualisasi Spasial</p>
+        <h1 class="dashboard-title">E2SFCA &amp; LISA</h1>
+        <p class="dashboard-subtitle">
+          Dashboard interaktif untuk menjelaskan pendahuluan penelitian, variabel yang digunakan,
+          serta hasil perhitungan indeks E2SFCA dan analisis LISA dalam satu halaman.
+        </p>
+        <nav class="dashboard-nav" aria-label="Navigasi utama">
+          <button type="button" class="dashboard-menu active" data-section="pendahuluan">Pendahuluan</button>
+          <button type="button" class="dashboard-menu" data-section="variabel">Variabel</button>
+          <button type="button" class="dashboard-menu" data-section="hasil">Hasil Analisis</button>
+        </nav>
+      </header>
+
+      <main class="dashboard-main">
+        <!-- =====================================================
+             MENU 1: PENDAHULUAN
+             ===================================================== -->
+        <section id="section-pendahuluan" class="dashboard-section active">
+          <div class="hero-card">
+            <h2>Pendahuluan</h2>
+            <p class="section-lead">
+              Bagian ini digunakan untuk menjelaskan latar belakang, tujuan, data yang digunakan,
+              dan metode perhitungan dalam penelitian. Teks di bawah sengaja dibuat sebagai template
+              agar dapat Anda sesuaikan dengan narasi penelitian yang sebenarnya.
+            </p>
+            <div class="info-grid">
+              <div class="info-card">
+                <strong>Latar Belakang</strong>
+                <span>Tambahkan uraian masalah, konteks wilayah kajian, dan alasan analisis aksesibilitas spasial dilakukan.</span>
+              </div>
+              <div class="info-card">
+                <strong>Tujuan</strong>
+                <span>Tambahkan tujuan penelitian dan pertanyaan yang ingin dijawab melalui E2SFCA dan LISA.</span>
+              </div>
+              <div class="info-card">
+                <strong>Wilayah Kajian</strong>
+                <span>Tambahkan nama wilayah kajian, periode analisis, dan informasi spasial penting lainnya.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <h2>Data yang Digunakan</h2>
+            <p>
+              File qgis2web yang sedang digunakan sudah memuat layer variabel berikut. Sumber data,
+              tahun, satuan, dan keterangan rinci dapat Anda lengkapi pada tabel ini tanpa mengubah mesin peta.
+            </p>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Kelompok</th><th>Data/Variabel</th><th>Keterangan</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Lingkungan</td><td>Curah Hujan, NDVI, Kecepatan Angin</td><td>Variabel lingkungan yang tersedia pada peta interaktif.</td></tr>
+                  <tr><td>Kualitas Udara</td><td>SO₂, NO₂, O₃, CO, AOD</td><td>Variabel kualitas udara yang tersedia pada peta interaktif.</td></tr>
+                  <tr><td>Topografi</td><td>Elevasi, Slope, TWI, TRI</td><td>Variabel kondisi/topografi wilayah.</td></tr>
+                  <tr><td>Akses &amp; Risiko</td><td>Jarak ke Sungai, Jarak ke Jalan, Jarak ke Pantai, Banjir, Longsor, FWI</td><td>Variabel jarak dan kerawanan yang tersedia dalam proyek.</td></tr>
+                  <tr><td>Sosial</td><td>Rasio Jenis Kelamin</td><td>Variabel sosial yang tersedia dalam proyek.</td></tr>
+                  <tr><td>Hasil Analisis</td><td>Indeks E2SFCA dan LISA</td><td>Layer hasil yang sudah tersedia pada file qgis2web.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="dashboard-footer-note">Catatan: sumber, tahun, satuan, dan definisi operasional belum diisi karena informasi tersebut tidak terdapat di file qgis2web.</p>
+          </div>
+
+          <div class="method-card">
+            <h2>Metode Perhitungan</h2>
+            <p>
+              Gunakan bagian ini untuk menjelaskan tahapan pengolahan data. Skema berikut merupakan
+              template visual dan dapat disesuaikan dengan prosedur penelitian Anda.
+            </p>
+            <div class="method-flow">
+              <div class="method-step">Data</div>
+              <div class="method-step">Pengolahan Variabel</div>
+              <div class="method-step">E2SFCA</div>
+              <div class="method-step">Indeks Aksesibilitas</div>
+              <div class="method-step">LISA</div>
+            </div>
+            <div class="dashboard-note" style="margin-top:16px;">
+              Tambahkan rumus E2SFCA, parameter catchment area, bobot, fungsi jarak, serta prosedur LISA
+              sesuai metode penelitian Anda pada bagian ini.
+            </div>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             MENU 2: VARIABEL
+             ===================================================== -->
+        <section id="section-variabel" class="dashboard-section">
+          <div class="workspace">
+            <div class="workspace-head">
+              <div>
+                <h2>Variabel Spasial</h2>
+                <p>Pilih satu variabel untuk menampilkan layer, legenda warna, dan deskripsinya.</p>
+              </div>
+              <div class="workspace-badge">Peta Interaktif</div>
+            </div>
+
+            <div class="kontrol-panel">
+              <label for="pilihPeta">Pilih variabel spasial:</label>
+              <select id="pilihPeta">
+                <option value="" disabled selected>-- Pilih Variabel Peta --</option>
+                <option value="curah_hujan">Curah Hujan</option>
+                <option value="ndvi">NDVI (Kerapatan Vegetasi)</option>
+                <option value="windspeed">Kecepatan Angin</option>
+                <option value="so2">SO2 (Sulfur Dioksida)</option>
+                <option value="no2">NO2 (Nitrogen Dioksida)</option>
+                <option value="o3">O3 (Ozon)</option>
+                <option value="co">CO (Karbon Monoksida)</option>
+                <option value="aod">AOD (Aerosol Optical Depth)</option>
+                <option value="elevasi">Ketinggian / Elevasi</option>
+                <option value="slope">Slope / Kemiringan Lereng</option>
+                <option value="twi">TWI (Topographic Wetness Index)</option>
+                <option value="sungai">Jarak ke Sungai</option>
+                <option value="jalan">Jarak ke Jalan Utama</option>
+                <option value="banjir">Kerawanan Banjir</option>
+                <option value="longsor">Kerawanan Longsor</option>
+                <option value="ndbi">NDBI (Tutupan Lahan Terbangun)</option>
+                <option value="jk">Rasio Jenis Kelamin (Sex Ratio)</option>
+                <option value="pantai">Jarak ke Garis Pantai</option>
+                <option value="fwi">FWI (Fire Weather Index)</option>
+                <option value="tri">TRI (Terrain Ruggedness Index)</option>
+              </select>
+            </div>
+
+            <div id="map-area">
+              <div id="map"><div id="legendaPeta" style="display:none;"></div></div>
+              <div class="deskripsi-panel">
+                <h3 class="deskripsi-judul" id="judulDeskripsi">Pilih Variabel</h3>
+                <p id="teksDeskripsi">Pilih variabel pada dropdown untuk menampilkan peta, legenda, dan deskripsi variabel.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             MENU 3: HASIL ANALISIS
+             ===================================================== -->
+        <section id="section-hasil" class="dashboard-section">
+          <div class="result-card">
+            <h2>Hasil Perhitungan</h2>
+            <p>
+              Menu ini menggunakan layer hasil yang sudah ada pada proyek qgis2web. Pilih tab E2SFCA
+              atau LISA untuk menampilkan hasil pada peta yang sama.
+            </p>
+
+            <div class="result-tabs" role="tablist" aria-label="Hasil analisis">
+              <button type="button" class="result-tab active" data-result="e2sfca">E2SFCA</button>
+              <button type="button" class="result-tab" data-result="lisa">LISA</button>
+            </div>
+
+            <div id="result-e2sfca" class="result-pane active">
+              <div class="result-summary">
+                <div class="metric"><div class="metric-label">Layer hasil</div><div class="metric-value">Indeks E2SFCA</div></div>
+                <div class="metric"><div class="metric-label">Visualisasi</div><div class="metric-value">Peta tematik</div></div>
+                <div class="metric"><div class="metric-label">Legenda</div><div class="metric-value">Kelas nilai</div></div>
+              </div>
+              <div class="kontrol-panel">
+                <label for="pilihHasil">Layer hasil E2SFCA:</label>
+                <select id="pilihHasil">
+                  <option value="indeks" selected>Indeks E2SFCA</option>
+                  <option value="pang">Indeks E2SFCA (Pang)</option>
+                </select>
+              </div>
+              <div class="deskripsi-panel" style="margin-top:0;">
+                <h3 class="deskripsi-judul">Indeks E2SFCA</h3>
+                <p id="deskripsiE2sfca">Peta ini menampilkan layer Indeks E2SFCA yang sudah tersedia pada proyek qgis2web.</p>
+              </div>
+            </div>
+
+            <div id="result-lisa" class="result-pane">
+              <div class="result-summary">
+                <div class="metric"><div class="metric-label">Analisis</div><div class="metric-value">LISA</div></div>
+                <div class="metric"><div class="metric-label">Klasifikasi</div><div class="metric-value">Hotspot / Coldspot</div></div>
+                <div class="metric"><div class="metric-label">Visualisasi</div><div class="metric-value">Peta klaster</div></div>
+              </div>
+              <div class="dashboard-note">
+                Layer LISA pada proyek qgis2web memuat kategori High-High, High-Low, Low-High,
+                Low-Low, dan Not Significant.
+              </div>
+            </div>
+
+            <div id="hasil-map-area" style="margin-top:16px;"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="js/qgis2web_expressions.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/L.Control.Layers.Tree.min.js"></script>
+    <script src="js/leaflet.rotatedMarker.js"></script>
+    <script src="js/leaflet.pattern.js"></script>
+    <script src="js/leaflet-hash.js"></script>
+    <script src="js/Autolinker.min.js"></script>
+    <script src="js/rbush.min.js"></script>
+    <script src="js/labelgun.min.js"></script>
+    <script src="js/labels.js"></script>
+    <script src="js/leaflet.photon.js"></script>
+    <script src="data/peta_curah_hujan_1.js"></script>
+    <script src="data/peta_ndvi_2.js"></script>
+    <script src="data/peta_windspeed_3.js"></script>
+    <script src="data/peta_SO2_4.js"></script>
+    <script src="data/peta_NO2_5.js"></script>
+    <script src="data/peta_O3_6.js"></script>
+    <script src="data/peta_CO_7.js"></script>
+    <script src="data/peta_AOD_8.js"></script>
+    <script src="data/peta_elevasi_9.js"></script>
+    <script src="data/peta_slope_10.js"></script>
+    <script src="data/peta_TWI_11.js"></script>
+    <script src="data/peta_sungai_12.js"></script>
+    <script src="data/peta_jalan_13.js"></script>
+    <script src="data/peta_banjir_14.js"></script>
+    <script src="data/peta_longsor_15.js"></script>
+    <script src="data/peta_ndbi_16.js"></script>
+    <script src="data/peta_jk_17.js"></script>
+    <script src="data/peta_pantai_18.js"></script>
+    <script src="data/peta_FWI_19.js"></script>
+    <script src="data/peta_indeks_20.js"></script>
+    <script src="data/peta_TRI_21.js"></script>
+    <script src="data/LISA_22.js"></script>
+    <script src="data/Peta_pang_kec_23.js"></script>
+    <script>
+      var highlightLayer;
+      function highlightFeature(e) {
+        highlightLayer = e.target;
+        highlightLayer.openPopup();
+      }
+      var map = L.map("map", {
+        zoomControl: false,
+        maxZoom: 28,
+        minZoom: 1,
+      }).fitBounds([
+        [-7.888069880597028, 108.27769630170738],
+        [-7.408927849297628, 108.87933221308751],
+      ]);
+      var hash = new L.Hash(map);
+      map.attributionControl.setPrefix(
+        '<a href="https://github.com/qgis2web/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>',
+      );
+      var autolinker = new Autolinker({
+        truncate: { length: 30, location: "smart" },
+      });
+      // remove popup's row if "visible-with-data"
+      function removeEmptyRowsFromPopupContent(content, feature) {
+        var tempDiv = document.createElement("div");
+        tempDiv.innerHTML = content;
+        var rows = tempDiv.querySelectorAll("tr");
+        for (var i = 0; i < rows.length; i++) {
+          var td = rows[i].querySelector("td.visible-with-data");
+          var key = td ? td.id : "";
+          if (
+            td &&
+            td.classList.contains("visible-with-data") &&
+            feature.properties[key] == null
+          ) {
+            rows[i].parentNode.removeChild(rows[i]);
+          }
+        }
+        return tempDiv.innerHTML;
+      }
+      // modify popup if contains media
+      function addClassToPopupIfMedia(content, popup) {
+        var tempDiv = document.createElement("div");
+        tempDiv.innerHTML = content;
+        var imgTd = tempDiv.querySelector("td img");
+        if (imgTd) {
+          var src = imgTd.getAttribute("src");
+          if (/\.(jpg|jpeg|png|gif|bmp|webp|avif)$/i.test(src)) {
+            popup._contentNode.classList.add("media");
+            var img = popup._contentNode.querySelector("td img");
+            if (img) {
+              // If already loaded (cache), update immediately
+              if (img.complete && img.naturalHeight > 0) {
+                popup.update();
+              } else {
+                img.addEventListener("load", function () {
+                  popup.update();
+                });
+                img.addEventListener("error", function () {
+                  popup.update();
+                });
+              }
+            }
+          } else if (/\.(mp3|wav|ogg|aac)$/i.test(src)) {
+            var audio = document.createElement("audio");
+            audio.controls = true;
+            audio.src = src;
+            imgTd.parentNode.replaceChild(audio, imgTd);
+            popup._contentNode.classList.add("media");
+            setTimeout(function () {
+              popup.setContent(tempDiv.innerHTML);
+              popup.update();
+            }, 10);
+          } else if (/\.(mp4|webm|ogg|mov)$/i.test(src)) {
+            var video = document.createElement("video");
+            video.controls = true;
+            video.src = src;
+            video.style.width = "400px";
+            video.style.height = "300px";
+            video.style.maxHeight = "60vh";
+            video.style.maxWidth = "60vw";
+            imgTd.parentNode.replaceChild(video, imgTd);
+            popup._contentNode.classList.add("media");
+            // Aggiorna il popup quando il video carica i metadati
+            video.addEventListener("loadedmetadata", function () {
+              popup.update();
+            });
+            setTimeout(function () {
+              popup.setContent(tempDiv.innerHTML);
+              popup.update();
+            }, 10);
+          } else {
+            popup._contentNode.classList.remove("media");
+          }
+        } else {
+          popup._contentNode.classList.remove("media");
+        }
+      }
+      var zoomControl = L.control
+        .zoom({
+          position: "topleft",
+        })
+        .addTo(map);
+      var bounds_group = new L.featureGroup([]);
+      function setBounds() {}
+      map.createPane("pane_GoogleRoad_0");
+      map.getPane("pane_GoogleRoad_0").style.zIndex = 400;
+      var layer_GoogleRoad_0 = L.tileLayer(
+        "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        {
+          pane: "pane_GoogleRoad_0",
+          opacity: 1.0,
+          attribution:
+            '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+          minZoom: 1,
+          maxZoom: 28,
+          minNativeZoom: 0,
+          maxNativeZoom: 20,
+        },
+      );
+      layer_GoogleRoad_0;
+      map.addLayer(layer_GoogleRoad_0);
+      function pop_peta_curah_hujan_1(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Curah Hujan</th>\
+                        <td class="visible-with-data" id="Curah Huja">' +
+          (feature.properties["Curah Huja"] !== null
+            ? autolinker.link(
+                String(feature.properties["Curah Huja"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_curah_hujan_1_0(feature) {
+        if (
+          feature.properties["Curah Huja"] >= 7.945991 &&
+          feature.properties["Curah Huja"] <= 8.845018
+        ) {
+          return {
+            pane: "pane_peta_curah_hujan_1",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,192,192,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Curah Huja"] >= 8.845018 &&
+          feature.properties["Curah Huja"] <= 9.360035
+        ) {
+          return {
+            pane: "pane_peta_curah_hujan_1",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,144,144,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Curah Huja"] >= 9.360035 &&
+          feature.properties["Curah Huja"] <= 10.163186
+        ) {
+          return {
+            pane: "pane_peta_curah_hujan_1",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,96,96,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Curah Huja"] >= 10.163186 &&
+          feature.properties["Curah Huja"] <= 11.108335
+        ) {
+          return {
+            pane: "pane_peta_curah_hujan_1",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,48,48,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Curah Huja"] >= 11.108335 &&
+          feature.properties["Curah Huja"] <= 12.027191
+        ) {
+          return {
+            pane: "pane_peta_curah_hujan_1",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,0,0,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_curah_hujan_1");
+      map.getPane("pane_peta_curah_hujan_1").style.zIndex = 401;
+      map.getPane("pane_peta_curah_hujan_1").style["mix-blend-mode"] = "normal";
+      var layer_peta_curah_hujan_1 = new L.geoJson(json_peta_curah_hujan_1, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_curah_hujan_1",
+        layerName: "layer_peta_curah_hujan_1",
+        pane: "pane_peta_curah_hujan_1",
+        onEachFeature: pop_peta_curah_hujan_1,
+        style: style_peta_curah_hujan_1_0,
+      });
+      bounds_group.addLayer(layer_peta_curah_hujan_1);
+      //   map.addLayer(layer_peta_curah_hujan_1);
+      function pop_peta_ndvi_2(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NDVI</th>\
+                        <td class="visible-with-data" id="NDVI">' +
+          (feature.properties["NDVI"] !== null
+            ? autolinker.link(
+                String(feature.properties["NDVI"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_ndvi_2_0(feature) {
+        if (
+          feature.properties["NDVI"] >= 0.275898 &&
+          feature.properties["NDVI"] <= 0.456883
+        ) {
+          return {
+            pane: "pane_peta_ndvi_2",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(237,252,230,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NDVI"] >= 0.456883 &&
+          feature.properties["NDVI"] <= 0.523483
+        ) {
+          return {
+            pane: "pane_peta_ndvi_2",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(201,234,194,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NDVI"] >= 0.523483 &&
+          feature.properties["NDVI"] <= 0.567228
+        ) {
+          return {
+            pane: "pane_peta_ndvi_2",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(123,199,124,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NDVI"] >= 0.567228 &&
+          feature.properties["NDVI"] <= 0.605078
+        ) {
+          return {
+            pane: "pane_peta_ndvi_2",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(42,146,75,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NDVI"] >= 0.605078 &&
+          feature.properties["NDVI"] <= 0.696922
+        ) {
+          return {
+            pane: "pane_peta_ndvi_2",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(0,68,27,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_ndvi_2");
+      map.getPane("pane_peta_ndvi_2").style.zIndex = 402;
+      map.getPane("pane_peta_ndvi_2").style["mix-blend-mode"] = "normal";
+      var layer_peta_ndvi_2 = new L.geoJson(json_peta_ndvi_2, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_ndvi_2",
+        layerName: "layer_peta_ndvi_2",
+        pane: "pane_peta_ndvi_2",
+        onEachFeature: pop_peta_ndvi_2,
+        style: style_peta_ndvi_2_0,
+      });
+      bounds_group.addLayer(layer_peta_ndvi_2);
+      //   map.addLayer(layer_peta_ndvi_2);
+      function pop_peta_windspeed_3(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kecepatan Angin</th>\
+                        <td class="visible-with-data" id="Kecepatan">' +
+          (feature.properties["Kecepatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecepatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_windspeed_3_0(feature) {
+        if (
+          feature.properties["Kecepatan"] >= 0.773948 &&
+          feature.properties["Kecepatan"] <= 1.13298
+        ) {
+          return {
+            pane: "pane_peta_windspeed_3",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(228,241,255,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kecepatan"] >= 1.13298 &&
+          feature.properties["Kecepatan"] <= 1.644375
+        ) {
+          return {
+            pane: "pane_peta_windspeed_3",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(200,220,240,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kecepatan"] >= 1.644375 &&
+          feature.properties["Kecepatan"] <= 2.087786
+        ) {
+          return {
+            pane: "pane_peta_windspeed_3",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(115,178,216,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kecepatan"] >= 2.087786 &&
+          feature.properties["Kecepatan"] <= 2.40643
+        ) {
+          return {
+            pane: "pane_peta_windspeed_3",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(41,121,185,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kecepatan"] >= 2.40643 &&
+          feature.properties["Kecepatan"] <= 3.390157
+        ) {
+          return {
+            pane: "pane_peta_windspeed_3",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(8,48,107,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_windspeed_3");
+      map.getPane("pane_peta_windspeed_3").style.zIndex = 403;
+      map.getPane("pane_peta_windspeed_3").style["mix-blend-mode"] = "normal";
+      var layer_peta_windspeed_3 = new L.geoJson(json_peta_windspeed_3, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_windspeed_3",
+        layerName: "layer_peta_windspeed_3",
+        pane: "pane_peta_windspeed_3",
+        onEachFeature: pop_peta_windspeed_3,
+        style: style_peta_windspeed_3_0,
+      });
+      bounds_group.addLayer(layer_peta_windspeed_3);
+      //   map.addLayer(layer_peta_windspeed_3);
+      function pop_peta_SO2_4(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">SO2</th>\
+                        <td class="visible-with-data" id="SO2">' +
+          (feature.properties["SO2"] !== null
+            ? autolinker.link(
+                String(feature.properties["SO2"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_SO2_4_0(feature) {
+        if (
+          feature.properties["SO2"] >= -0.000203 &&
+          feature.properties["SO2"] <= -0.000065
+        ) {
+          return {
+            pane: "pane_peta_SO2_4",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,225,210,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["SO2"] >= -0.000065 &&
+          feature.properties["SO2"] <= -0.000002
+        ) {
+          return {
+            pane: "pane_peta_SO2_4",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["SO2"] >= -0.000002 &&
+          feature.properties["SO2"] <= 0.000063
+        ) {
+          return {
+            pane: "pane_peta_SO2_4",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["SO2"] >= 0.000063 &&
+          feature.properties["SO2"] <= 0.000121
+        ) {
+          return {
+            pane: "pane_peta_SO2_4",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["SO2"] >= 0.000121 &&
+          feature.properties["SO2"] <= 0.000255
+        ) {
+          return {
+            pane: "pane_peta_SO2_4",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_SO2_4");
+      map.getPane("pane_peta_SO2_4").style.zIndex = 404;
+      map.getPane("pane_peta_SO2_4").style["mix-blend-mode"] = "normal";
+      var layer_peta_SO2_4 = new L.geoJson(json_peta_SO2_4, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_SO2_4",
+        layerName: "layer_peta_SO2_4",
+        pane: "pane_peta_SO2_4",
+        onEachFeature: pop_peta_SO2_4,
+        style: style_peta_SO2_4_0,
+      });
+      bounds_group.addLayer(layer_peta_SO2_4);
+      //   map.addLayer(layer_peta_SO2_4);
+      function pop_peta_NO2_5(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NO2</th>\
+                        <td class="visible-with-data" id="NO2">' +
+          (feature.properties["NO2"] !== null
+            ? autolinker.link(
+                String(feature.properties["NO2"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_NO2_5_0(feature) {
+        if (
+          feature.properties["NO2"] >= 0.000001 &&
+          feature.properties["NO2"] <= 0.000005
+        ) {
+          return {
+            pane: "pane_peta_NO2_5",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,225,210,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NO2"] >= 0.000005 &&
+          feature.properties["NO2"] <= 0.000008
+        ) {
+          return {
+            pane: "pane_peta_NO2_5",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NO2"] >= 0.000008 &&
+          feature.properties["NO2"] <= 0.00001
+        ) {
+          return {
+            pane: "pane_peta_NO2_5",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NO2"] >= 0.00001 &&
+          feature.properties["NO2"] <= 0.000012
+        ) {
+          return {
+            pane: "pane_peta_NO2_5",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["NO2"] >= 0.000012 &&
+          feature.properties["NO2"] <= 0.000019
+        ) {
+          return {
+            pane: "pane_peta_NO2_5",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_NO2_5");
+      map.getPane("pane_peta_NO2_5").style.zIndex = 405;
+      map.getPane("pane_peta_NO2_5").style["mix-blend-mode"] = "normal";
+      var layer_peta_NO2_5 = new L.geoJson(json_peta_NO2_5, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_NO2_5",
+        layerName: "layer_peta_NO2_5",
+        pane: "pane_peta_NO2_5",
+        onEachFeature: pop_peta_NO2_5,
+        style: style_peta_NO2_5_0,
+      });
+      bounds_group.addLayer(layer_peta_NO2_5);
+      //   map.addLayer(layer_peta_NO2_5);
+      function pop_peta_O3_6(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">O3</th>\
+                        <td class="visible-with-data" id="O3">' +
+          (feature.properties["O3"] !== null
+            ? autolinker.link(
+                String(feature.properties["O3"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_O3_6_0(feature) {
+        if (
+          feature.properties["O3"] >= 0.11595 &&
+          feature.properties["O3"] <= 0.116316
+        ) {
+          return {
+            pane: "pane_peta_O3_6",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,225,210,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["O3"] >= 0.116316 &&
+          feature.properties["O3"] <= 0.116515
+        ) {
+          return {
+            pane: "pane_peta_O3_6",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["O3"] >= 0.116515 &&
+          feature.properties["O3"] <= 0.116682
+        ) {
+          return {
+            pane: "pane_peta_O3_6",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["O3"] >= 0.116682 &&
+          feature.properties["O3"] <= 0.116893
+        ) {
+          return {
+            pane: "pane_peta_O3_6",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["O3"] >= 0.116893 &&
+          feature.properties["O3"] <= 0.117709
+        ) {
+          return {
+            pane: "pane_peta_O3_6",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_O3_6");
+      map.getPane("pane_peta_O3_6").style.zIndex = 406;
+      map.getPane("pane_peta_O3_6").style["mix-blend-mode"] = "normal";
+      var layer_peta_O3_6 = new L.geoJson(json_peta_O3_6, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_O3_6",
+        layerName: "layer_peta_O3_6",
+        pane: "pane_peta_O3_6",
+        onEachFeature: pop_peta_O3_6,
+        style: style_peta_O3_6_0,
+      });
+      bounds_group.addLayer(layer_peta_O3_6);
+      //   map.addLayer(layer_peta_O3_6);
+      function pop_peta_CO_7(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CO</th>\
+                        <td class="visible-with-data" id="CO">' +
+          (feature.properties["CO"] !== null
+            ? autolinker.link(
+                String(feature.properties["CO"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_CO_7_0(feature) {
+        if (
+          feature.properties["CO"] >= 0.021532 &&
+          feature.properties["CO"] <= 0.02459
+        ) {
+          return {
+            pane: "pane_peta_CO_7",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,225,210,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["CO"] >= 0.02459 &&
+          feature.properties["CO"] <= 0.025741
+        ) {
+          return {
+            pane: "pane_peta_CO_7",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["CO"] >= 0.025741 &&
+          feature.properties["CO"] <= 0.026333
+        ) {
+          return {
+            pane: "pane_peta_CO_7",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["CO"] >= 0.026333 &&
+          feature.properties["CO"] <= 0.027047
+        ) {
+          return {
+            pane: "pane_peta_CO_7",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["CO"] >= 0.027047 &&
+          feature.properties["CO"] <= 0.028494
+        ) {
+          return {
+            pane: "pane_peta_CO_7",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_CO_7");
+      map.getPane("pane_peta_CO_7").style.zIndex = 407;
+      map.getPane("pane_peta_CO_7").style["mix-blend-mode"] = "normal";
+      var layer_peta_CO_7 = new L.geoJson(json_peta_CO_7, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_CO_7",
+        layerName: "layer_peta_CO_7",
+        pane: "pane_peta_CO_7",
+        onEachFeature: pop_peta_CO_7,
+        style: style_peta_CO_7_0,
+      });
+      bounds_group.addLayer(layer_peta_CO_7);
+      //   map.addLayer(layer_peta_CO_7);
+      function pop_peta_AOD_8(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AOD</th>\
+                        <td class="visible-with-data" id="AOD">' +
+          (feature.properties["AOD"] !== null
+            ? autolinker.link(
+                String(feature.properties["AOD"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_AOD_8_0(feature) {
+        if (
+          feature.properties["AOD"] >= -0.156547 &&
+          feature.properties["AOD"] <= 0.228326
+        ) {
+          return {
+            pane: "pane_peta_AOD_8",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,225,210,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["AOD"] >= 0.228326 &&
+          feature.properties["AOD"] <= 0.242993
+        ) {
+          return {
+            pane: "pane_peta_AOD_8",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["AOD"] >= 0.242993 &&
+          feature.properties["AOD"] <= 0.288079
+        ) {
+          return {
+            pane: "pane_peta_AOD_8",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["AOD"] >= 0.288079 &&
+          feature.properties["AOD"] <= 0.333851
+        ) {
+          return {
+            pane: "pane_peta_AOD_8",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["AOD"] >= 0.333851 &&
+          feature.properties["AOD"] <= 0.510628
+        ) {
+          return {
+            pane: "pane_peta_AOD_8",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_AOD_8");
+      map.getPane("pane_peta_AOD_8").style.zIndex = 408;
+      map.getPane("pane_peta_AOD_8").style["mix-blend-mode"] = "normal";
+      var layer_peta_AOD_8 = new L.geoJson(json_peta_AOD_8, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_AOD_8",
+        layerName: "layer_peta_AOD_8",
+        pane: "pane_peta_AOD_8",
+        onEachFeature: pop_peta_AOD_8,
+        style: style_peta_AOD_8_0,
+      });
+      bounds_group.addLayer(layer_peta_AOD_8);
+      //   map.addLayer(layer_peta_AOD_8);
+      function pop_peta_elevasi_9(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Elevasi</th>\
+                        <td class="visible-with-data" id="Elevasi">' +
+          (feature.properties["Elevasi"] !== null
+            ? autolinker.link(
+                String(feature.properties["Elevasi"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_elevasi_9_0(feature) {
+        if (
+          feature.properties["Elevasi"] >= 5.003293 &&
+          feature.properties["Elevasi"] <= 13.746893
+        ) {
+          return {
+            pane: "pane_peta_elevasi_9",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(224,252,213,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Elevasi"] >= 13.746893 &&
+          feature.properties["Elevasi"] <= 60.968341
+        ) {
+          return {
+            pane: "pane_peta_elevasi_9",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(165,234,151,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Elevasi"] >= 60.968341 &&
+          feature.properties["Elevasi"] <= 116.767155
+        ) {
+          return {
+            pane: "pane_peta_elevasi_9",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(96,199,97,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Elevasi"] >= 116.767155 &&
+          feature.properties["Elevasi"] <= 212.253506
+        ) {
+          return {
+            pane: "pane_peta_elevasi_9",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(42,146,75,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Elevasi"] >= 212.253506 &&
+          feature.properties["Elevasi"] <= 683.035461
+        ) {
+          return {
+            pane: "pane_peta_elevasi_9",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(0,68,27,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_elevasi_9");
+      map.getPane("pane_peta_elevasi_9").style.zIndex = 409;
+      map.getPane("pane_peta_elevasi_9").style["mix-blend-mode"] = "normal";
+      var layer_peta_elevasi_9 = new L.geoJson(json_peta_elevasi_9, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_elevasi_9",
+        layerName: "layer_peta_elevasi_9",
+        pane: "pane_peta_elevasi_9",
+        onEachFeature: pop_peta_elevasi_9,
+        style: style_peta_elevasi_9_0,
+      });
+      bounds_group.addLayer(layer_peta_elevasi_9);
+      //   map.addLayer(layer_peta_elevasi_9);
+      function pop_peta_slope_10(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Slope</th>\
+                        <td class="visible-with-data" id="Slope">' +
+          (feature.properties["Slope"] !== null
+            ? autolinker.link(
+                String(feature.properties["Slope"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_slope_10_0(feature) {
+        if (
+          feature.properties["Slope"] >= 1.781428 &&
+          feature.properties["Slope"] <= 4.018996
+        ) {
+          return {
+            pane: "pane_peta_slope_10",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(224,252,213,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Slope"] >= 4.018996 &&
+          feature.properties["Slope"] <= 5.97495
+        ) {
+          return {
+            pane: "pane_peta_slope_10",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(165,234,151,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Slope"] >= 5.97495 &&
+          feature.properties["Slope"] <= 7.954098
+        ) {
+          return {
+            pane: "pane_peta_slope_10",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(96,199,97,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Slope"] >= 7.954098 &&
+          feature.properties["Slope"] <= 10.788176
+        ) {
+          return {
+            pane: "pane_peta_slope_10",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(42,146,75,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Slope"] >= 10.788176 &&
+          feature.properties["Slope"] <= 18.627609
+        ) {
+          return {
+            pane: "pane_peta_slope_10",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(0,68,27,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_slope_10");
+      map.getPane("pane_peta_slope_10").style.zIndex = 410;
+      map.getPane("pane_peta_slope_10").style["mix-blend-mode"] = "normal";
+      var layer_peta_slope_10 = new L.geoJson(json_peta_slope_10, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_slope_10",
+        layerName: "layer_peta_slope_10",
+        pane: "pane_peta_slope_10",
+        onEachFeature: pop_peta_slope_10,
+        style: style_peta_slope_10_0,
+      });
+      bounds_group.addLayer(layer_peta_slope_10);
+      //   map.addLayer(layer_peta_slope_10);
+      function pop_peta_TWI_11(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">TWI</th>\
+                        <td class="visible-with-data" id="TWI">' +
+          (feature.properties["TWI"] !== null
+            ? autolinker.link(
+                String(feature.properties["TWI"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_TWI_11_0(feature) {
+        if (
+          feature.properties["TWI"] >= 6.38857 &&
+          feature.properties["TWI"] <= 7.012707
+        ) {
+          return {
+            pane: "pane_peta_TWI_11",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,236,216,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TWI"] >= 7.012707 &&
+          feature.properties["TWI"] <= 7.645998
+        ) {
+          return {
+            pane: "pane_peta_TWI_11",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(253,210,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TWI"] >= 7.645998 &&
+          feature.properties["TWI"] <= 8.382345
+        ) {
+          return {
+            pane: "pane_peta_TWI_11",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(253,146,67,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TWI"] >= 8.382345 &&
+          feature.properties["TWI"] <= 10.143462
+        ) {
+          return {
+            pane: "pane_peta_TWI_11",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(223,80,5,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TWI"] >= 10.143462 &&
+          feature.properties["TWI"] <= 14.392292
+        ) {
+          return {
+            pane: "pane_peta_TWI_11",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(127,39,4,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_TWI_11");
+      map.getPane("pane_peta_TWI_11").style.zIndex = 411;
+      map.getPane("pane_peta_TWI_11").style["mix-blend-mode"] = "normal";
+      var layer_peta_TWI_11 = new L.geoJson(json_peta_TWI_11, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_TWI_11",
+        layerName: "layer_peta_TWI_11",
+        pane: "pane_peta_TWI_11",
+        onEachFeature: pop_peta_TWI_11,
+        style: style_peta_TWI_11_0,
+      });
+      bounds_group.addLayer(layer_peta_TWI_11);
+      //   map.addLayer(layer_peta_TWI_11);
+      function pop_peta_sungai_12(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jarak ke Sungai</th>\
+                        <td class="visible-with-data" id="Jarak ke S">' +
+          (feature.properties["Jarak ke S"] !== null
+            ? autolinker.link(
+                String(feature.properties["Jarak ke S"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_sungai_12_0(feature) {
+        if (
+          feature.properties["Jarak ke S"] >= 281.3573 &&
+          feature.properties["Jarak ke S"] <= 557.290625
+        ) {
+          return {
+            pane: "pane_peta_sungai_12",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(8,48,107,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke S"] >= 557.290625 &&
+          feature.properties["Jarak ke S"] <= 894.20155
+        ) {
+          return {
+            pane: "pane_peta_sungai_12",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(41,121,185,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke S"] >= 894.20155 &&
+          feature.properties["Jarak ke S"] <= 1141.849023
+        ) {
+          return {
+            pane: "pane_peta_sungai_12",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(115,178,216,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke S"] >= 1141.849023 &&
+          feature.properties["Jarak ke S"] <= 1754.590137
+        ) {
+          return {
+            pane: "pane_peta_sungai_12",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(199,220,240,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke S"] >= 1754.590137 &&
+          feature.properties["Jarak ke S"] <= 4085.336182
+        ) {
+          return {
+            pane: "pane_peta_sungai_12",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(224,240,255,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_sungai_12");
+      map.getPane("pane_peta_sungai_12").style.zIndex = 412;
+      map.getPane("pane_peta_sungai_12").style["mix-blend-mode"] = "normal";
+      var layer_peta_sungai_12 = new L.geoJson(json_peta_sungai_12, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_sungai_12",
+        layerName: "layer_peta_sungai_12",
+        pane: "pane_peta_sungai_12",
+        onEachFeature: pop_peta_sungai_12,
+        style: style_peta_sungai_12_0,
+      });
+      bounds_group.addLayer(layer_peta_sungai_12);
+      //   map.addLayer(layer_peta_sungai_12);
+      function pop_peta_jalan_13(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jarak ke Jalan Utama</th>\
+                        <td class="visible-with-data" id="Jarak ke J">' +
+          (feature.properties["Jarak ke J"] !== null
+            ? autolinker.link(
+                String(feature.properties["Jarak ke J"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_jalan_13_0(feature) {
+        if (
+          feature.properties["Jarak ke J"] >= 160.752609 &&
+          feature.properties["Jarak ke J"] <= 349.268036
+        ) {
+          return {
+            pane: "pane_peta_jalan_13",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke J"] >= 349.268036 &&
+          feature.properties["Jarak ke J"] <= 500.59776
+        ) {
+          return {
+            pane: "pane_peta_jalan_13",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke J"] >= 500.59776 &&
+          feature.properties["Jarak ke J"] <= 598.029565
+        ) {
+          return {
+            pane: "pane_peta_jalan_13",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke J"] >= 598.029565 &&
+          feature.properties["Jarak ke J"] <= 918.964392
+        ) {
+          return {
+            pane: "pane_peta_jalan_13",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke J"] >= 918.964392 &&
+          feature.properties["Jarak ke J"] <= 2212.393066
+        ) {
+          return {
+            pane: "pane_peta_jalan_13",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,245,240,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_jalan_13");
+      map.getPane("pane_peta_jalan_13").style.zIndex = 413;
+      map.getPane("pane_peta_jalan_13").style["mix-blend-mode"] = "normal";
+      var layer_peta_jalan_13 = new L.geoJson(json_peta_jalan_13, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_jalan_13",
+        layerName: "layer_peta_jalan_13",
+        pane: "pane_peta_jalan_13",
+        onEachFeature: pop_peta_jalan_13,
+        style: style_peta_jalan_13_0,
+      });
+      bounds_group.addLayer(layer_peta_jalan_13);
+      //   map.addLayer(layer_peta_jalan_13);
+      function pop_peta_banjir_14(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kerawanan Banjir</th>\
+                        <td class="visible-with-data" id="Kerawanan">' +
+          (feature.properties["Kerawanan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kerawanan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_banjir_14_0(feature) {
+        if (
+          feature.properties["Kerawanan"] >= 0.001507 &&
+          feature.properties["Kerawanan"] <= 0.169035
+        ) {
+          return {
+            pane: "pane_peta_banjir_14",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,245,240,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kerawanan"] >= 0.169035 &&
+          feature.properties["Kerawanan"] <= 0.336563
+        ) {
+          return {
+            pane: "pane_peta_banjir_14",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kerawanan"] >= 0.336563 &&
+          feature.properties["Kerawanan"] <= 0.504091
+        ) {
+          return {
+            pane: "pane_peta_banjir_14",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kerawanan"] >= 0.504091 &&
+          feature.properties["Kerawanan"] <= 0.671619
+        ) {
+          return {
+            pane: "pane_peta_banjir_14",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kerawanan"] >= 0.671619 &&
+          feature.properties["Kerawanan"] <= 0.839147
+        ) {
+          return {
+            pane: "pane_peta_banjir_14",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_banjir_14");
+      map.getPane("pane_peta_banjir_14").style.zIndex = 414;
+      map.getPane("pane_peta_banjir_14").style["mix-blend-mode"] = "normal";
+      var layer_peta_banjir_14 = new L.geoJson(json_peta_banjir_14, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_banjir_14",
+        layerName: "layer_peta_banjir_14",
+        pane: "pane_peta_banjir_14",
+        onEachFeature: pop_peta_banjir_14,
+        style: style_peta_banjir_14_0,
+      });
+      bounds_group.addLayer(layer_peta_banjir_14);
+      //   map.addLayer(layer_peta_banjir_14);
+      function pop_peta_longsor_15(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kerawanan Longsor</th>\
+                        <td class="visible-with-data" id="Kerawanan">' +
+          (feature.properties["Kerawanan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kerawanan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_longsor_15_0(feature) {
+        if (
+          feature.properties["Kerawanan"] >= 0.0 &&
+          feature.properties["Kerawanan"] <= 0.0
+        ) {
+          return {
+            pane: "pane_peta_longsor_15",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,245,240,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Kerawanan"] >= 0.0 &&
+          feature.properties["Kerawanan"] <= 1.0
+        ) {
+          return {
+            pane: "pane_peta_longsor_15",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(206,0,26,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_longsor_15");
+      map.getPane("pane_peta_longsor_15").style.zIndex = 415;
+      map.getPane("pane_peta_longsor_15").style["mix-blend-mode"] = "normal";
+      var layer_peta_longsor_15 = new L.geoJson(json_peta_longsor_15, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_longsor_15",
+        layerName: "layer_peta_longsor_15",
+        pane: "pane_peta_longsor_15",
+        onEachFeature: pop_peta_longsor_15,
+        style: style_peta_longsor_15_0,
+      });
+      bounds_group.addLayer(layer_peta_longsor_15);
+      //   map.addLayer(layer_peta_longsor_15);
+      function pop_peta_ndbi_16(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NDBI</th>\
+                        <td class="visible-with-data" id="Tutupan La">' +
+          (feature.properties["Tutupan La"] !== null
+            ? autolinker.link(
+                String(feature.properties["Tutupan La"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_ndbi_16_0(feature) {
+        if (
+          feature.properties["Tutupan La"] >= -0.783784 &&
+          feature.properties["Tutupan La"] <= -0.5
+        ) {
+          return {
+            pane: "pane_peta_ndbi_16",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,245,240,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Tutupan La"] >= -0.5 &&
+          feature.properties["Tutupan La"] <= -0.428571
+        ) {
+          return {
+            pane: "pane_peta_ndbi_16",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(252,190,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Tutupan La"] >= -0.428571 &&
+          feature.properties["Tutupan La"] <= -0.4
+        ) {
+          return {
+            pane: "pane_peta_ndbi_16",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Tutupan La"] >= -0.4 &&
+          feature.properties["Tutupan La"] <= -0.333333
+        ) {
+          return {
+            pane: "pane_peta_ndbi_16",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(211,32,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Tutupan La"] >= -0.333333 &&
+          feature.properties["Tutupan La"] <= 1.0
+        ) {
+          return {
+            pane: "pane_peta_ndbi_16",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_ndbi_16");
+      map.getPane("pane_peta_ndbi_16").style.zIndex = 416;
+      map.getPane("pane_peta_ndbi_16").style["mix-blend-mode"] = "normal";
+      var layer_peta_ndbi_16 = new L.geoJson(json_peta_ndbi_16, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_ndbi_16",
+        layerName: "layer_peta_ndbi_16",
+        pane: "pane_peta_ndbi_16",
+        onEachFeature: pop_peta_ndbi_16,
+        style: style_peta_ndbi_16_0,
+      });
+      bounds_group.addLayer(layer_peta_ndbi_16);
+      //   map.addLayer(layer_peta_ndbi_16);
+      function pop_peta_jk_17(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Rasio Jenis Kelamin</th>\
+                        <td class="visible-with-data" id="Sex Ratio">' +
+          (feature.properties["Sex Ratio"] !== null
+            ? autolinker.link(
+                String(feature.properties["Sex Ratio"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_jk_17_0(feature) {
+        if (
+          feature.properties["Sex Ratio"] >= 93.191742 &&
+          feature.properties["Sex Ratio"] <= 96.224872
+        ) {
+          return {
+            pane: "pane_peta_jk_17",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(202,0,32,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Sex Ratio"] >= 96.224872 &&
+          feature.properties["Sex Ratio"] <= 99.258002
+        ) {
+          return {
+            pane: "pane_peta_jk_17",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(244,165,130,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Sex Ratio"] >= 99.258002 &&
+          feature.properties["Sex Ratio"] <= 102.291132
+        ) {
+          return {
+            pane: "pane_peta_jk_17",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(247,247,247,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Sex Ratio"] >= 102.291132 &&
+          feature.properties["Sex Ratio"] <= 105.324261
+        ) {
+          return {
+            pane: "pane_peta_jk_17",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(146,197,222,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Sex Ratio"] >= 105.324261 &&
+          feature.properties["Sex Ratio"] <= 108.357391
+        ) {
+          return {
+            pane: "pane_peta_jk_17",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(5,113,176,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_jk_17");
+      map.getPane("pane_peta_jk_17").style.zIndex = 417;
+      map.getPane("pane_peta_jk_17").style["mix-blend-mode"] = "normal";
+      var layer_peta_jk_17 = new L.geoJson(json_peta_jk_17, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_jk_17",
+        layerName: "layer_peta_jk_17",
+        pane: "pane_peta_jk_17",
+        onEachFeature: pop_peta_jk_17,
+        style: style_peta_jk_17_0,
+      });
+      bounds_group.addLayer(layer_peta_jk_17);
+      //   map.addLayer(layer_peta_jk_17);
+      function pop_peta_pantai_18(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jarak ke Garis Pantai</th>\
+                        <td class="visible-with-data" id="Jarak ke G">' +
+          (feature.properties["Jarak ke G"] !== null
+            ? autolinker.link(
+                String(feature.properties["Jarak ke G"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_pantai_18_0(feature) {
+        if (
+          feature.properties["Jarak ke G"] >= 313.208069 &&
+          feature.properties["Jarak ke G"] <= 5592.202002
+        ) {
+          return {
+            pane: "pane_peta_pantai_18",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(8,48,107,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke G"] >= 5592.202002 &&
+          feature.properties["Jarak ke G"] <= 10871.195935
+        ) {
+          return {
+            pane: "pane_peta_pantai_18",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(41,121,185,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke G"] >= 10871.195935 &&
+          feature.properties["Jarak ke G"] <= 16150.189868
+        ) {
+          return {
+            pane: "pane_peta_pantai_18",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(115,178,216,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke G"] >= 16150.189868 &&
+          feature.properties["Jarak ke G"] <= 21429.183801
+        ) {
+          return {
+            pane: "pane_peta_pantai_18",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(200,220,240,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Jarak ke G"] >= 21429.183801 &&
+          feature.properties["Jarak ke G"] <= 26708.177734
+        ) {
+          return {
+            pane: "pane_peta_pantai_18",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(247,251,255,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_pantai_18");
+      map.getPane("pane_peta_pantai_18").style.zIndex = 418;
+      map.getPane("pane_peta_pantai_18").style["mix-blend-mode"] = "normal";
+      var layer_peta_pantai_18 = new L.geoJson(json_peta_pantai_18, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_pantai_18",
+        layerName: "layer_peta_pantai_18",
+        pane: "pane_peta_pantai_18",
+        onEachFeature: pop_peta_pantai_18,
+        style: style_peta_pantai_18_0,
+      });
+      bounds_group.addLayer(layer_peta_pantai_18);
+      //   map.addLayer(layer_peta_pantai_18);
+      function pop_peta_FWI_19(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">FWI</th>\
+                        <td class="visible-with-data" id="FWI">' +
+          (feature.properties["FWI"] !== null
+            ? autolinker.link(
+                String(feature.properties["FWI"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_FWI_19_0(feature) {
+        if (
+          feature.properties["FWI"] >= 0.162339 &&
+          feature.properties["FWI"] <= 0.186742
+        ) {
+          return {
+            pane: "pane_peta_FWI_19",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,245,240,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["FWI"] >= 0.186742 &&
+          feature.properties["FWI"] <= 0.211145
+        ) {
+          return {
+            pane: "pane_peta_FWI_19",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(251,112,80,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["FWI"] >= 0.211145 &&
+          feature.properties["FWI"] <= 0.235547
+        ) {
+          return {
+            pane: "pane_peta_FWI_19",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(103,0,13,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_FWI_19");
+      map.getPane("pane_peta_FWI_19").style.zIndex = 419;
+      map.getPane("pane_peta_FWI_19").style["mix-blend-mode"] = "normal";
+      var layer_peta_FWI_19 = new L.geoJson(json_peta_FWI_19, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_FWI_19",
+        layerName: "layer_peta_FWI_19",
+        pane: "pane_peta_FWI_19",
+        onEachFeature: pop_peta_FWI_19,
+        style: style_peta_FWI_19_0,
+      });
+      bounds_group.addLayer(layer_peta_FWI_19);
+      //   map.addLayer(layer_peta_FWI_19);
+      function pop_peta_indeks_20(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Indeks E2SFCA</th>\
+                        <td class="visible-with-data" id="Indeks E2S">' +
+          (feature.properties["Indeks E2S"] !== null
+            ? autolinker.link(
+                String(feature.properties["Indeks E2S"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_indeks_20_0(feature) {
+        if (
+          feature.properties["Indeks E2S"] >= 0.001825 &&
+          feature.properties["Indeks E2S"] <= 0.002826
+        ) {
+          return {
+            pane: "pane_peta_indeks_20",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(247,252,245,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Indeks E2S"] >= 0.002826 &&
+          feature.properties["Indeks E2S"] <= 0.003827
+        ) {
+          return {
+            pane: "pane_peta_indeks_20",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(123,199,124,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["Indeks E2S"] >= 0.003827 &&
+          feature.properties["Indeks E2S"] <= 0.004829
+        ) {
+          return {
+            pane: "pane_peta_indeks_20",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(0,68,27,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_indeks_20");
+      map.getPane("pane_peta_indeks_20").style.zIndex = 420;
+      map.getPane("pane_peta_indeks_20").style["mix-blend-mode"] = "normal";
+      var layer_peta_indeks_20 = new L.geoJson(json_peta_indeks_20, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_indeks_20",
+        layerName: "layer_peta_indeks_20",
+        pane: "pane_peta_indeks_20",
+        onEachFeature: pop_peta_indeks_20,
+        style: style_peta_indeks_20_0,
+      });
+      bounds_group.addLayer(layer_peta_indeks_20);
+      //   map.addLayer(layer_peta_indeks_20);
+      function pop_peta_TRI_21(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="Kecamatan">' +
+          (feature.properties["Kecamatan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kecamatan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="Kelurahan">' +
+          (feature.properties["Kelurahan"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kelurahan"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">TRI</th>\
+                        <td class="visible-with-data" id="TRI">' +
+          (feature.properties["TRI"] !== null
+            ? autolinker.link(
+                String(feature.properties["TRI"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_peta_TRI_21_0(feature) {
+        if (
+          feature.properties["TRI"] >= 1.154042 &&
+          feature.properties["TRI"] <= 1.932834
+        ) {
+          return {
+            pane: "pane_peta_TRI_21",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(255,236,216,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TRI"] >= 1.932834 &&
+          feature.properties["TRI"] <= 2.788107
+        ) {
+          return {
+            pane: "pane_peta_TRI_21",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(253,210,165,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TRI"] >= 2.788107 &&
+          feature.properties["TRI"] <= 3.754883
+        ) {
+          return {
+            pane: "pane_peta_TRI_21",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(253,146,67,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TRI"] >= 3.754883 &&
+          feature.properties["TRI"] <= 4.698136
+        ) {
+          return {
+            pane: "pane_peta_TRI_21",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(223,80,5,1.0)",
+            interactive: true,
+          };
+        }
+        if (
+          feature.properties["TRI"] >= 4.698136 &&
+          feature.properties["TRI"] <= 7.887592
+        ) {
+          return {
+            pane: "pane_peta_TRI_21",
+            opacity: 1,
+            color: "rgba(35,35,35,1.0)",
+            dashArray: "",
+            lineCap: "butt",
+            lineJoin: "miter",
+            weight: 1.0,
+            fill: true,
+            fillOpacity: 1,
+            fillColor: "rgba(127,39,4,1.0)",
+            interactive: true,
+          };
+        }
+      }
+      map.createPane("pane_peta_TRI_21");
+      map.getPane("pane_peta_TRI_21").style.zIndex = 421;
+      map.getPane("pane_peta_TRI_21").style["mix-blend-mode"] = "normal";
+      var layer_peta_TRI_21 = new L.geoJson(json_peta_TRI_21, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_peta_TRI_21",
+        layerName: "layer_peta_TRI_21",
+        pane: "pane_peta_TRI_21",
+        onEachFeature: pop_peta_TRI_21,
+        style: style_peta_TRI_21_0,
+      });
+      bounds_group.addLayer(layer_peta_TRI_21);
+      //   map.addLayer(layer_peta_TRI_21);
+      function pop_LISA_22(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td class="visible-with-data" id="WADMKC">' +
+          (feature.properties["WADMKC"] !== null
+            ? autolinker.link(
+                String(feature.properties["WADMKC"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kelurahan</th>\
+                        <td class="visible-with-data" id="WADMKD">' +
+          (feature.properties["WADMKD"] !== null
+            ? autolinker.link(
+                String(feature.properties["WADMKD"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kuadran_LI</th>\
+                        <td class="visible-with-data" id="Kuadran_LI">' +
+          (feature.properties["Kuadran_LI"] !== null
+            ? autolinker.link(
+                String(feature.properties["Kuadran_LI"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_LISA_22_0(feature) {
+        switch (String(feature.properties["Kuadran_LI"])) {
+          case "High-High (Hotspot)":
+            return {
+              pane: "pane_LISA_22",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(0,255,33,1.0)",
+              interactive: true,
+            };
+            break;
+          case "High-Low (Outlier)":
+            return {
+              pane: "pane_LISA_22",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(255,222,0,1.0)",
+              interactive: true,
+            };
+            break;
+          case "Low-High (Outlier)":
+            return {
+              pane: "pane_LISA_22",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(216,114,36,1.0)",
+              interactive: true,
+            };
+            break;
+          case "Low-Low (Coldspot)":
+            return {
+              pane: "pane_LISA_22",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(255,16,0,1.0)",
+              interactive: true,
+            };
+            break;
+          case "Not Significant":
+            return {
+              pane: "pane_LISA_22",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(192,184,189,1.0)",
+              interactive: true,
+            };
+            break;
+        }
+      }
+      map.createPane("pane_LISA_22");
+      map.getPane("pane_LISA_22").style.zIndex = 422;
+      map.getPane("pane_LISA_22").style["mix-blend-mode"] = "normal";
+      var layer_LISA_22 = new L.geoJson(json_LISA_22, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_LISA_22",
+        layerName: "layer_LISA_22",
+        pane: "pane_LISA_22",
+        onEachFeature: pop_LISA_22,
+        style: style_LISA_22_0,
+      });
+      bounds_group.addLayer(layer_LISA_22);
+      //   map.addLayer(layer_LISA_22);
+      function pop_Peta_pang_kec_23(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td>' +
+          (feature.properties["WADMKC"] !== null
+            ? autolinker.link(
+                String(feature.properties["WADMKC"])
+                  .replace(/'/g, "'")
+                  .toLocaleString(),
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_Peta_pang_kec_23_0(feature) {
+        switch (String(feature.properties["color_id"])) {
+          case "1":
+            return {
+              pane: "pane_Peta_pang_kec_23",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(51,221,65,1.0)",
+              interactive: true,
+            };
+            break;
+          case "2":
+            return {
+              pane: "pane_Peta_pang_kec_23",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(153,110,202,1.0)",
+              interactive: true,
+            };
+            break;
+          case "3":
+            return {
+              pane: "pane_Peta_pang_kec_23",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(200,188,98,1.0)",
+              interactive: true,
+            };
+            break;
+          case "4":
+            return {
+              pane: "pane_Peta_pang_kec_23",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(45,179,228,1.0)",
+              interactive: true,
+            };
+            break;
+        }
+      }
+      map.createPane("pane_Peta_pang_kec_23");
+      map.getPane("pane_Peta_pang_kec_23").style.zIndex = 423;
+      map.getPane("pane_Peta_pang_kec_23").style["mix-blend-mode"] = "normal";
+      var layer_Peta_pang_kec_23 = new L.geoJson(json_Peta_pang_kec_23, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_Peta_pang_kec_23",
+        layerName: "layer_Peta_pang_kec_23",
+        pane: "pane_Peta_pang_kec_23",
+        onEachFeature: pop_Peta_pang_kec_23,
+        style: style_Peta_pang_kec_23_0,
+      });
+      bounds_group.addLayer(layer_Peta_pang_kec_23);
+      //   map.addLayer(layer_Peta_pang_kec_23);
+      var overlaysTree = [
+        {
+          label:
+            'Peta_pang_kec<br /><table><tr><td style="text-align: center;"><img src="legend/Peta_pang_kec_23_10.png" /></td><td>1</td></tr><tr><td style="text-align: center;"><img src="legend/Peta_pang_kec_23_21.png" /></td><td>2</td></tr><tr><td style="text-align: center;"><img src="legend/Peta_pang_kec_23_32.png" /></td><td>3</td></tr><tr><td style="text-align: center;"><img src="legend/Peta_pang_kec_23_43.png" /></td><td>4</td></tr></table>',
+          layer: layer_Peta_pang_kec_23,
+        },
+        {
+          label:
+            'LISA<br /><table><tr><td style="text-align: center;"><img src="legend/LISA_22_HighHighHotspot0.png" /></td><td>High-High (Hotspot)</td></tr><tr><td style="text-align: center;"><img src="legend/LISA_22_HighLowOutlier1.png" /></td><td>High-Low (Outlier)</td></tr><tr><td style="text-align: center;"><img src="legend/LISA_22_LowHighOutlier2.png" /></td><td>Low-High (Outlier)</td></tr><tr><td style="text-align: center;"><img src="legend/LISA_22_LowLowColdspot3.png" /></td><td>Low-Low (Coldspot)</td></tr><tr><td style="text-align: center;"><img src="legend/LISA_22_NotSignificant4.png" /></td><td>Not Significant</td></tr></table>',
+          layer: layer_LISA_22,
+        },
+        {
+          label:
+            'peta_TRI<br /><table><tr><td style="text-align: center;"><img src="legend/peta_TRI_21_1151930.png" /></td><td>1.15 - 1.93</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TRI_21_1932791.png" /></td><td>1.93 - 2.79</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TRI_21_2793752.png" /></td><td>2.79 - 3.75</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TRI_21_375473.png" /></td><td>3.75 - 4.7</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TRI_21_477894.png" /></td><td>4.7 - 7.89</td></tr></table>',
+          layer: layer_peta_TRI_21,
+        },
+        {
+          label:
+            'peta_indeks<br /><table><tr><td style="text-align: center;"><img src="legend/peta_indeks_20_00018000280.png" /></td><td>0.0018 - 0.0028</td></tr><tr><td style="text-align: center;"><img src="legend/peta_indeks_20_00028000381.png" /></td><td>0.0028 - 0.0038</td></tr><tr><td style="text-align: center;"><img src="legend/peta_indeks_20_00038000482.png" /></td><td>0.0038 - 0.0048</td></tr></table>',
+          layer: layer_peta_indeks_20,
+        },
+        {
+          label:
+            'peta_FWI<br /><table><tr><td style="text-align: center;"><img src="legend/peta_FWI_19_016201870.png" /></td><td>0.162 - 0.187</td></tr><tr><td style="text-align: center;"><img src="legend/peta_FWI_19_018702111.png" /></td><td>0.187 - 0.211</td></tr><tr><td style="text-align: center;"><img src="legend/peta_FWI_19_021102362.png" /></td><td>0.211 - 0.236</td></tr></table>',
+          layer: layer_peta_FWI_19,
+        },
+        {
+          label:
+            'peta_pantai<br /><table><tr><td style="text-align: center;"><img src="legend/peta_pantai_18_31355920.png" /></td><td>313 - 5592</td></tr><tr><td style="text-align: center;"><img src="legend/peta_pantai_18_5592108711.png" /></td><td>5592 - 10871</td></tr><tr><td style="text-align: center;"><img src="legend/peta_pantai_18_10871161502.png" /></td><td>10871 - 16150</td></tr><tr><td style="text-align: center;"><img src="legend/peta_pantai_18_16150214293.png" /></td><td>16150 - 21429</td></tr><tr><td style="text-align: center;"><img src="legend/peta_pantai_18_21429267084.png" /></td><td>21429 - 26708</td></tr></table>',
+          layer: layer_peta_pantai_18,
+        },
+        {
+          label:
+            'peta_jk<br /><table><tr><td style="text-align: center;"><img src="legend/peta_jk_17_9329620.png" /></td><td>93.2 - 96.2</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jk_17_9629931.png" /></td><td>96.2 - 99.3</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jk_17_99310232.png" /></td><td>99.3 - 102.3</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jk_17_102310533.png" /></td><td>102.3 - 105.3</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jk_17_105310844.png" /></td><td>105.3 - 108.4</td></tr></table>',
+          layer: layer_peta_jk_17,
+        },
+        {
+          label:
+            'peta_ndbi<br /><table><tr><td style="text-align: center;"><img src="legend/peta_ndbi_16_0784050.png" /></td><td>-0.784 - -0.5</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndbi_16_0504291.png" /></td><td>-0.5 - -0.429</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndbi_16_0429042.png" /></td><td>-0.429 - -0.4</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndbi_16_0403333.png" /></td><td>-0.4 - -0.333</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndbi_16_033314.png" /></td><td>-0.333 - 1</td></tr></table>',
+          layer: layer_peta_ndbi_16,
+        },
+        {
+          label:
+            'peta_longsor<br /><table><tr><td style="text-align: center;"><img src="legend/peta_longsor_15_000.png" /></td><td>0 - 0</td></tr><tr><td style="text-align: center;"><img src="legend/peta_longsor_15_011.png" /></td><td>0 - 1</td></tr></table>',
+          layer: layer_peta_longsor_15,
+        },
+        {
+          label:
+            'peta_banjir<br /><table><tr><td style="text-align: center;"><img src="legend/peta_banjir_14_00170.png" /></td><td>0 - 0.17</td></tr><tr><td style="text-align: center;"><img src="legend/peta_banjir_14_0170341.png" /></td><td>0.17 - 0.34</td></tr><tr><td style="text-align: center;"><img src="legend/peta_banjir_14_034052.png" /></td><td>0.34 - 0.5</td></tr><tr><td style="text-align: center;"><img src="legend/peta_banjir_14_050673.png" /></td><td>0.5 - 0.67</td></tr><tr><td style="text-align: center;"><img src="legend/peta_banjir_14_0670844.png" /></td><td>0.67 - 0.84</td></tr></table>',
+          layer: layer_peta_banjir_14,
+        },
+        {
+          label:
+            'peta_jalan<br /><table><tr><td style="text-align: center;"><img src="legend/peta_jalan_13_1613490.png" /></td><td>161 - 349</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jalan_13_3495011.png" /></td><td>349 - 501</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jalan_13_5015982.png" /></td><td>501 - 598</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jalan_13_5989193.png" /></td><td>598 - 919</td></tr><tr><td style="text-align: center;"><img src="legend/peta_jalan_13_91922124.png" /></td><td>919 - 2212</td></tr></table>',
+          layer: layer_peta_jalan_13,
+        },
+        {
+          label:
+            'peta_sungai<br /><table><tr><td style="text-align: center;"><img src="legend/peta_sungai_12_2815570.png" /></td><td>281 - 557</td></tr><tr><td style="text-align: center;"><img src="legend/peta_sungai_12_5578941.png" /></td><td>557 - 894</td></tr><tr><td style="text-align: center;"><img src="legend/peta_sungai_12_89411422.png" /></td><td>894 - 1142</td></tr><tr><td style="text-align: center;"><img src="legend/peta_sungai_12_114217553.png" /></td><td>1142 - 1755</td></tr><tr><td style="text-align: center;"><img src="legend/peta_sungai_12_175540854.png" /></td><td>1755 - 4085</td></tr></table>',
+          layer: layer_peta_sungai_12,
+        },
+        {
+          label:
+            'peta_TWI<br /><table><tr><td style="text-align: center;"><img src="legend/peta_TWI_11_6397010.png" /></td><td>6.39 - 7.01</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TWI_11_7017651.png" /></td><td>7.01 - 7.65</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TWI_11_7658382.png" /></td><td>7.65 - 8.38</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TWI_11_83810143.png" /></td><td>8.38 - 10.14</td></tr><tr><td style="text-align: center;"><img src="legend/peta_TWI_11_101414394.png" /></td><td>10.14 - 14.39</td></tr></table>',
+          layer: layer_peta_TWI_11,
+        },
+        {
+          label:
+            'peta_slope<br /><table><tr><td style="text-align: center;"><img src="legend/peta_slope_10_1840.png" /></td><td>1.8 - 4</td></tr><tr><td style="text-align: center;"><img src="legend/peta_slope_10_461.png" /></td><td>4 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/peta_slope_10_682.png" /></td><td>6 - 8</td></tr><tr><td style="text-align: center;"><img src="legend/peta_slope_10_81083.png" /></td><td>8 - 10.8</td></tr><tr><td style="text-align: center;"><img src="legend/peta_slope_10_1081864.png" /></td><td>10.8 - 18.6</td></tr></table>',
+          layer: layer_peta_slope_10,
+        },
+        {
+          label:
+            'peta_elevasi<br /><table><tr><td style="text-align: center;"><img src="legend/peta_elevasi_9_51370.png" /></td><td>5 - 13.7</td></tr><tr><td style="text-align: center;"><img src="legend/peta_elevasi_9_137611.png" /></td><td>13.7 - 61</td></tr><tr><td style="text-align: center;"><img src="legend/peta_elevasi_9_6111682.png" /></td><td>61 - 116.8</td></tr><tr><td style="text-align: center;"><img src="legend/peta_elevasi_9_116821233.png" /></td><td>116.8 - 212.3</td></tr><tr><td style="text-align: center;"><img src="legend/peta_elevasi_9_21236834.png" /></td><td>212.3 - 683</td></tr></table>',
+          layer: layer_peta_elevasi_9,
+        },
+        {
+          label:
+            'peta_AOD<br /><table><tr><td style="text-align: center;"><img src="legend/peta_AOD_8_015702280.png" /></td><td>-0.157 - 0.228</td></tr><tr><td style="text-align: center;"><img src="legend/peta_AOD_8_022802431.png" /></td><td>0.228 - 0.243</td></tr><tr><td style="text-align: center;"><img src="legend/peta_AOD_8_024302882.png" /></td><td>0.243 - 0.288</td></tr><tr><td style="text-align: center;"><img src="legend/peta_AOD_8_028803343.png" /></td><td>0.288 - 0.334</td></tr><tr><td style="text-align: center;"><img src="legend/peta_AOD_8_033405114.png" /></td><td>0.334 - 0.511</td></tr></table>',
+          layer: layer_peta_AOD_8,
+        },
+        {
+          label:
+            'peta_CO<br /><table><tr><td style="text-align: center;"><img src="legend/peta_CO_7_0021530024590.png" /></td><td>0.02153 - 0.02459</td></tr><tr><td style="text-align: center;"><img src="legend/peta_CO_7_0024590025741.png" /></td><td>0.02459 - 0.02574</td></tr><tr><td style="text-align: center;"><img src="legend/peta_CO_7_0025740026332.png" /></td><td>0.02574 - 0.02633</td></tr><tr><td style="text-align: center;"><img src="legend/peta_CO_7_0026330027053.png" /></td><td>0.02633 - 0.02705</td></tr><tr><td style="text-align: center;"><img src="legend/peta_CO_7_0027050028494.png" /></td><td>0.02705 - 0.02849</td></tr></table>',
+          layer: layer_peta_CO_7,
+        },
+        {
+          label:
+            'peta_O3<br /><table><tr><td style="text-align: center;"><img src="legend/peta_O3_6_0115950116320.png" /></td><td>0.11595 - 0.11632</td></tr><tr><td style="text-align: center;"><img src="legend/peta_O3_6_0116320116511.png" /></td><td>0.11632 - 0.11651</td></tr><tr><td style="text-align: center;"><img src="legend/peta_O3_6_0116510116682.png" /></td><td>0.11651 - 0.11668</td></tr><tr><td style="text-align: center;"><img src="legend/peta_O3_6_0116680116893.png" /></td><td>0.11668 - 0.11689</td></tr><tr><td style="text-align: center;"><img src="legend/peta_O3_6_0116890117714.png" /></td><td>0.11689 - 0.11771</td></tr></table>',
+          layer: layer_peta_O3_6,
+        },
+        {
+          label:
+            'peta_NO2<br /><table><tr><td style="text-align: center;"><img src="legend/peta_NO2_5_0000001300000050.png" /></td><td>0.0000013 - 0.000005</td></tr><tr><td style="text-align: center;"><img src="legend/peta_NO2_5_0000005000000791.png" /></td><td>0.000005 - 0.0000079</td></tr><tr><td style="text-align: center;"><img src="legend/peta_NO2_5_00000079000000952.png" /></td><td>0.0000079 - 0.0000095</td></tr><tr><td style="text-align: center;"><img src="legend/peta_NO2_5_00000095000001213.png" /></td><td>0.0000095 - 0.0000121</td></tr><tr><td style="text-align: center;"><img src="legend/peta_NO2_5_00000121000001874.png" /></td><td>0.0000121 - 0.0000187</td></tr></table>',
+          layer: layer_peta_NO2_5,
+        },
+        {
+          label:
+            'peta_SO2<br /><table><tr><td style="text-align: center;"><img src="legend/peta_SO2_4_000020300000650.png" /></td><td>-0.000203 - -0.000065</td></tr><tr><td style="text-align: center;"><img src="legend/peta_SO2_4_000006500000021.png" /></td><td>-0.000065 - -0.000002</td></tr><tr><td style="text-align: center;"><img src="legend/peta_SO2_4_000000200000632.png" /></td><td>-0.000002 - 0.000063</td></tr><tr><td style="text-align: center;"><img src="legend/peta_SO2_4_000006300001213.png" /></td><td>0.000063 - 0.000121</td></tr><tr><td style="text-align: center;"><img src="legend/peta_SO2_4_000012100002554.png" /></td><td>0.000121 - 0.000255</td></tr></table>',
+          layer: layer_peta_SO2_4,
+        },
+        {
+          label:
+            'peta_windspeed<br /><table><tr><td style="text-align: center;"><img src="legend/peta_windspeed_3_0771130.png" /></td><td>0.77 - 1.13</td></tr><tr><td style="text-align: center;"><img src="legend/peta_windspeed_3_1131641.png" /></td><td>1.13 - 1.64</td></tr><tr><td style="text-align: center;"><img src="legend/peta_windspeed_3_1642092.png" /></td><td>1.64 - 2.09</td></tr><tr><td style="text-align: center;"><img src="legend/peta_windspeed_3_2092413.png" /></td><td>2.09 - 2.41</td></tr><tr><td style="text-align: center;"><img src="legend/peta_windspeed_3_2413394.png" /></td><td>2.41 - 3.39</td></tr></table>',
+          layer: layer_peta_windspeed_3,
+        },
+        {
+          label:
+            'peta_ndvi<br /><table><tr><td style="text-align: center;"><img src="legend/peta_ndvi_2_027604570.png" /></td><td>0.276 - 0.457</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndvi_2_045705231.png" /></td><td>0.457 - 0.523</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndvi_2_052305672.png" /></td><td>0.523 - 0.567</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndvi_2_056706053.png" /></td><td>0.567 - 0.605</td></tr><tr><td style="text-align: center;"><img src="legend/peta_ndvi_2_060506974.png" /></td><td>0.605 - 0.697</td></tr></table>',
+          layer: layer_peta_ndvi_2,
+        },
+        {
+          label:
+            'peta_curah_hujan<br /><table><tr><td style="text-align: center;"><img src="legend/peta_curah_hujan_1_7958850.png" /></td><td>7.95 - 8.85</td></tr><tr><td style="text-align: center;"><img src="legend/peta_curah_hujan_1_8859361.png" /></td><td>8.85 - 9.36</td></tr><tr><td style="text-align: center;"><img src="legend/peta_curah_hujan_1_93610162.png" /></td><td>9.36 - 10.16</td></tr><tr><td style="text-align: center;"><img src="legend/peta_curah_hujan_1_101611113.png" /></td><td>10.16 - 11.11</td></tr><tr><td style="text-align: center;"><img src="legend/peta_curah_hujan_1_111112034.png" /></td><td>11.11 - 12.03</td></tr></table>',
+          layer: layer_peta_curah_hujan_1,
+        },
+        { label: "Google Road", layer: layer_GoogleRoad_0, radioGroup: "bm" },
+      ];
+      var lay = L.control.layers.tree(null, overlaysTree, {
+        //namedToggle: true,
+        //selectorBack: false,
+        //closedSymbol: '&#8862; &#x1f5c0;',
+        //openedSymbol: '&#8863; &#x1f5c1;',
+        //collapseAll: 'Collapse all',
+        //expandAll: 'Expand all',
+        collapsed: true,
+      });
+      // Kontrol layer bawaan disembunyikan; pemilihan layer dilakukan lewat dropdown.
+      setBounds();
+      resetLabels([layer_Peta_pang_kec_23]);
+      map.on("zoomend", function () {
+        resetLabels([layer_Peta_pang_kec_23]);
+      });
+      map.on("layeradd", function () {
+        resetLabels([layer_Peta_pang_kec_23]);
+      });
+      map.on("layerremove", function () {
+        resetLabels([layer_Peta_pang_kec_23]);
+      });
+
+      // =========================================================================================
+      // LOGIKA DASHBOARD 3 MENU + PETA QGIS2WEB
+      // =========================================================================================
+
+      var petaData = {
+        curah_hujan: { judul: "Curah Hujan", layer: layer_peta_curah_hujan_1, deskripsi: "Variabel ini menunjukkan intensitas Curah Hujan di wilayah tersebut. Warna yang lebih pekat menunjukkan curah hujan yang lebih tinggi." },
+        ndvi: { judul: "NDVI (Normalized Difference Vegetation Index)", layer: layer_peta_ndvi_2, deskripsi: "Variabel ini menunjukkan tingkat kerapatan atau kehijauan vegetasi. Semakin hijau warnanya, semakin lebat tutupan vegetasinya." },
+        windspeed: { judul: "Kecepatan Angin", layer: layer_peta_windspeed_3, deskripsi: "Variabel ini memetakan rata-rata kecepatan angin di area studi." },
+        so2: { judul: "Konsentrasi SO2", layer: layer_peta_SO2_4, deskripsi: "Peta ini menampilkan sebaran polutan Sulfur Dioksida (SO2) di udara." },
+        no2: { judul: "Konsentrasi NO2", layer: layer_peta_NO2_5, deskripsi: "Peta ini menampilkan sebaran polutan Nitrogen Dioksida (NO2)." },
+        o3: { judul: "Konsentrasi Ozon (O3)", layer: layer_peta_O3_6, deskripsi: "Peta ini menunjukkan konsentrasi Ozon permukaan (Ground Level Ozone)." },
+        co: { judul: "Konsentrasi CO", layer: layer_peta_CO_7, deskripsi: "Peta ini menunjukkan tingkat Karbon Monoksida (CO) di udara." },
+        aod: { judul: "Aerosol Optical Depth (AOD)", layer: layer_peta_AOD_8, deskripsi: "Variabel AOD digunakan untuk memantau kualitas udara dan sebaran partikel aerosol/debu." },
+        elevasi: { judul: "Elevasi (Ketinggian)", layer: layer_peta_elevasi_9, deskripsi: "Variabel ini menunjukkan tingkat ketinggian wilayah di atas permukaan laut." },
+        slope: { judul: "Slope (Kemiringan Lereng)", layer: layer_peta_slope_10, deskripsi: "Peta ini menggambarkan derajat kemiringan permukaan lahan." },
+        twi: { judul: "Topographic Wetness Index (TWI)", layer: layer_peta_TWI_11, deskripsi: "TWI menggambarkan akumulasi aliran permukaan dan tingkat kebasahan tanah secara topografis." },
+        sungai: { judul: "Jarak ke Sungai", layer: layer_peta_sungai_12, deskripsi: "Variabel ini mengukur kedekatan suatu area terhadap aliran sungai." },
+        jalan: { judul: "Jarak ke Jalan Utama", layer: layer_peta_jalan_13, deskripsi: "Menggambarkan aksesibilitas wilayah diukur dari jaraknya ke jaringan jalan utama." },
+        banjir: { judul: "Kerawanan Banjir", layer: layer_peta_banjir_14, deskripsi: "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap bencana banjir." },
+        longsor: { judul: "Kerawanan Longsor", layer: layer_peta_longsor_15, deskripsi: "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap pergerakan tanah atau tanah longsor." },
+        ndbi: { judul: "NDBI (Tutupan Lahan Terbangun)", layer: layer_peta_ndbi_16, deskripsi: "Normalized Difference Built-up Index (NDBI) digunakan untuk memetakan luasan area perkotaan atau lahan terbangun." },
+        jk: { judul: "Rasio Jenis Kelamin", layer: layer_peta_jk_17, deskripsi: "Menunjukkan perbandingan jumlah penduduk laki-laki terhadap penduduk perempuan (Sex Ratio)." },
+        pantai: { judul: "Jarak ke Garis Pantai", layer: layer_peta_pantai_18, deskripsi: "Variabel jarak absolut (dalam meter/km) dari daratan ke wilayah pesisir atau garis pantai." },
+        fwi: { judul: "Fire Weather Index (FWI)", layer: layer_peta_FWI_19, deskripsi: "Menunjukkan tingkat kerawanan cuaca terhadap kejadian kebakaran hutan dan lahan." },
+        pang: { judul: "Indeks E2SFCA (Pang)", layer: layer_Peta_pang_kec_23, deskripsi: "Peta ini menunjukkan aksesibilitas spasial layanan menggunakan metode E2SFCA (Variabel Pang)." },
+        indeks: { judul: "Indeks E2SFCA", layer: layer_peta_indeks_20, deskripsi: "Peta ini menunjukkan Indeks Enhanced Two-Step Floating Catchment Area (E2SFCA)." },
+        tri: { judul: "Terrain Ruggedness Index (TRI)", layer: layer_peta_TRI_21, deskripsi: "Mengukur tingkat kekasaran bentuk muka bumi atau morfologi (Ruggedness)." },
+        lisa: { judul: "LISA (Hotspot/Coldspot)", layer: layer_LISA_22, deskripsi: "Peta signifikansi spasial lokal. Kategori yang tersedia: High-High, High-Low, Low-High, Low-Low, dan Not Significant." }
+      };
+
+      var legendaData = {"curah_hujan":{"judul":"Curah Hujan","labels":["7.95 - 8.85","8.85 - 9.36","9.36 - 10.16","10.16 - 11.11","11.11 - 12.03"],"colors":["rgba(255,192,192,1.0)","rgba(255,144,144,1.0)","rgba(255,96,96,1.0)","rgba(255,48,48,1.0)","rgba(255,0,0,1.0)"],"categorical":false},"ndvi":{"judul":"NDVI (Normalized Difference Vegetation Index)","labels":["0.276 - 0.457","0.457 - 0.523","0.523 - 0.567","0.567 - 0.605","0.605 - 0.697"],"colors":["rgba(237,252,230,1.0)","rgba(201,234,194,1.0)","rgba(123,199,124,1.0)","rgba(42,146,75,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"windspeed":{"judul":"Kecepatan Angin","labels":["0.77 - 1.13","1.13 - 1.64","1.64 - 2.09","2.09 - 2.41","2.41 - 3.39"],"colors":["rgba(228,241,255,1.0)","rgba(200,220,240,1.0)","rgba(115,178,216,1.0)","rgba(41,121,185,1.0)","rgba(8,48,107,1.0)"],"categorical":false},"so2":{"judul":"Konsentrasi SO2","labels":["-0.000203 - -0.000065","-0.000065 - -0.000002","-0.000002 - 0.000063","0.000063 - 0.000121","0.000121 - 0.000255"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"no2":{"judul":"Konsentrasi NO2","labels":["0.0000013 - 0.000005","0.000005 - 0.0000079","0.0000079 - 0.0000095","0.0000095 - 0.0000121","0.0000121 - 0.0000187"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"o3":{"judul":"Konsentrasi Ozon (O3)","labels":["0.11595 - 0.11632","0.11632 - 0.11651","0.11651 - 0.11668","0.11668 - 0.11689","0.11689 - 0.11771"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"co":{"judul":"Konsentrasi CO","labels":["0.02153 - 0.02459","0.02459 - 0.02574","0.02574 - 0.02633","0.02633 - 0.02705","0.02705 - 0.02849"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"aod":{"judul":"Aerosol Optical Depth (AOD)","labels":["-0.157 - 0.228","0.228 - 0.243","0.243 - 0.288","0.288 - 0.334","0.334 - 0.511"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"elevasi":{"judul":"Elevasi (Ketinggian)","labels":["5 - 13.7","13.7 - 61","61 - 116.8","116.8 - 212.3","212.3 - 683"],"colors":["rgba(224,252,213,1.0)","rgba(165,234,151,1.0)","rgba(96,199,97,1.0)","rgba(42,146,75,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"slope":{"judul":"Slope (Kemiringan Lereng)","labels":["1.8 - 4","4 - 6","6 - 8","8 - 10.8","10.8 - 18.6"],"colors":["rgba(224,252,213,1.0)","rgba(165,234,151,1.0)","rgba(96,199,97,1.0)","rgba(42,146,75,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"twi":{"judul":"Topographic Wetness Index (TWI)","labels":["6.39 - 7.01","7.01 - 7.65","7.65 - 8.38","8.38 - 10.14","10.14 - 14.39"],"colors":["rgba(255,236,216,1.0)","rgba(253,210,165,1.0)","rgba(253,146,67,1.0)","rgba(223,80,5,1.0)","rgba(127,39,4,1.0)"],"categorical":false},"sungai":{"judul":"Jarak ke Sungai","labels":["281 - 557","557 - 894","894 - 1142","1142 - 1755","1755 - 4085"],"colors":["rgba(8,48,107,1.0)","rgba(41,121,185,1.0)","rgba(115,178,216,1.0)","rgba(199,220,240,1.0)","rgba(224,240,255,1.0)"],"categorical":false},"jalan":{"judul":"Jarak ke Jalan Utama","labels":["161 - 349","349 - 501","501 - 598","598 - 919","919 - 2212"],"colors":["rgba(103,0,13,1.0)","rgba(211,32,32,1.0)","rgba(251,112,80,1.0)","rgba(252,190,165,1.0)","rgba(255,245,240,1.0)"],"categorical":false},"banjir":{"judul":"Kerawanan Banjir","labels":["0 - 0.17","0.17 - 0.34","0.34 - 0.5","0.5 - 0.67","0.67 - 0.84"],"colors":["rgba(255,245,240,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"longsor":{"judul":"Kerawanan Longsor","labels":["0 - 0","0 - 1"],"colors":["rgba(255,245,240,1.0)","rgba(206,0,26,1.0)"],"categorical":false},"ndbi":{"judul":"NDBI (Tutupan Lahan Terbangun)","labels":["-0.784 - -0.5","-0.5 - -0.429","-0.429 - -0.4","-0.4 - -0.333","-0.333 - 1"],"colors":["rgba(255,245,240,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"jk":{"judul":"Rasio Jenis Kelamin","labels":["93.2 - 96.2","96.2 - 99.3","99.3 - 102.3","102.3 - 105.3","105.3 - 108.4"],"colors":["rgba(202,0,32,1.0)","rgba(244,165,130,1.0)","rgba(247,247,247,1.0)","rgba(146,197,222,1.0)","rgba(5,113,176,1.0)"],"categorical":false},"pantai":{"judul":"Jarak ke Garis Pantai","labels":["313 - 5592","5592 - 10871","10871 - 16150","16150 - 21429","21429 - 26708"],"colors":["rgba(8,48,107,1.0)","rgba(41,121,185,1.0)","rgba(115,178,216,1.0)","rgba(200,220,240,1.0)","rgba(247,251,255,1.0)"],"categorical":false},"fwi":{"judul":"Fire Weather Index (FWI)","labels":["0.162 - 0.187","0.187 - 0.211","0.211 - 0.236"],"colors":["rgba(255,245,240,1.0)","rgba(251,112,80,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"pang":{"judul":"Indeks E2SFCA (Pang)","labels":["1","2","3","4"],"colors":["rgba(51,221,65,1.0)","rgba(153,110,202,1.0)","rgba(200,188,98,1.0)","rgba(45,179,228,1.0)"],"categorical":true},"indeks":{"judul":"Indeks E2SFCA","labels":["0.0018 - 0.0028","0.0028 - 0.0038","0.0038 - 0.0048"],"colors":["rgba(247,252,245,1.0)","rgba(123,199,124,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"tri":{"judul":"Terrain Ruggedness Index (TRI)","labels":["1.15 - 1.93","1.93 - 2.79","2.79 - 3.75","3.75 - 4.7","4.7 - 7.89"],"colors":["rgba(255,236,216,1.0)","rgba(253,210,165,1.0)","rgba(253,146,67,1.0)","rgba(223,80,5,1.0)","rgba(127,39,4,1.0)"],"categorical":false},"lisa":{"judul":"LISA (Hotspot/Coldspot)","labels":["High-High (Hotspot)","High-Low (Outlier)","Low-High (Outlier)","Low-Low (Coldspot)","Not Significant"],"colors":["rgba(0,255,33,1.0)","rgba(255,222,0,1.0)","rgba(216,114,36,1.0)","rgba(255,16,0,1.0)","rgba(192,184,189,1.0)"],"categorical":true},"kecamatan":{"judul":"Peta Wilayah Pangandaran","labels":["1","2","3","4"],"colors":["rgba(51,221,65,1.0)","rgba(153,110,202,1.0)","rgba(200,188,98,1.0)","rgba(45,179,228,1.0)"],"categorical":true}};;
+
+      var semuaLayerPeta = [];
+      for (var namaPeta in petaData) {
+        if (petaData[namaPeta] && petaData[namaPeta].layer && semuaLayerPeta.indexOf(petaData[namaPeta].layer) === -1) {
+          semuaLayerPeta.push(petaData[namaPeta].layer);
+        }
+      }
+
+      var menuDropdown = document.getElementById("pilihPeta");
+      var hasilDropdown = document.getElementById("pilihHasil");
+      var judulPanel = document.getElementById("judulDeskripsi");
+      var teksPanel = document.getElementById("teksDeskripsi");
+      var legendaPeta = document.getElementById("legendaPeta");
+      var mapEl = document.getElementById("map");
+      var mapHome = mapEl.parentNode;
+      var hasilMapArea = document.getElementById("hasil-map-area");
+
+      function escapeHtml(value) {
+        return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      }
+
+      function tampilkanLegenda(idPilihan) {
+        var info = legendaData[idPilihan];
+        if (!info || !info.labels || !info.labels.length) {
+          legendaPeta.style.display = "none";
+          legendaPeta.innerHTML = "";
+          return;
+        }
+        var htmlLegenda = '<div class="legenda-judul">' + escapeHtml(info.judul || "Legenda") + "</div>";
+        if (info.categorical) {
+          htmlLegenda += '<div class="legenda-kategori">';
+          for (var i = 0; i < info.labels.length; i++) {
+            htmlLegenda += '<div class="legenda-item"><span class="legenda-warna" style="background:' + info.colors[i] + ';"></span><span>' + escapeHtml(info.labels[i]) + '</span></div>';
+          }
+          htmlLegenda += "</div>";
+        } else {
+          var stops = [];
+          var n = info.colors.length;
+          for (var j = 0; j < n; j++) {
+            var p0 = (j / n) * 100;
+            var p1 = ((j + 1) / n) * 100;
+            stops.push(info.colors[j] + " " + p0 + "%");
+            stops.push(info.colors[j] + " " + p1 + "%");
+          }
+          htmlLegenda += '<div class="legenda-gradient" style="background:linear-gradient(to right,' + stops.join(",") + ');"></div>';
+          var minValue = info.labels[0].split(" - ")[0];
+          var maxValue = info.labels[info.labels.length - 1].split(" - ")[1] || info.labels[info.labels.length - 1];
+          htmlLegenda += '<div class="legenda-nilai"><span>' + escapeHtml(minValue) + '</span><span>' + escapeHtml(maxValue) + '</span></div>';
+        }
+        legendaPeta.innerHTML = htmlLegenda;
+        legendaPeta.style.display = "block";
+      }
+
+      function matikanSemuaLayer() {
+        semuaLayerPeta.forEach(function(layer) {
+          if (map.hasLayer(layer)) map.removeLayer(layer);
+        });
+      }
+
+      function tampilkanPeta(idPilihan, deskripsiOverride) {
+        matikanSemuaLayer();
+        var data = petaData[idPilihan];
+        if (!data || !data.layer) {
+          judulPanel.textContent = "Pilih Variabel";
+          teksPanel.textContent = "Pilih variabel untuk menampilkan peta dan deskripsinya.";
+          legendaPeta.style.display = "none";
+          return;
+        }
+        map.addLayer(data.layer);
+        judulPanel.textContent = data.judul;
+        teksPanel.textContent = deskripsiOverride || data.deskripsi;
+        tampilkanLegenda(idPilihan);
+        setTimeout(function() {
+          map.invalidateSize();
+          try {
+            var bounds = data.layer.getBounds();
+            if (bounds && bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 12 });
+          } catch (err) {}
+        }, 120);
+      }
+
+      function pindahkanMapKe(area) {
+        if (area && mapEl.parentNode !== area) area.appendChild(mapEl);
+        setTimeout(function() { map.invalidateSize(); }, 80);
+      }
+
+      function tampilkanSection(id) {
+        document.querySelectorAll(".dashboard-section").forEach(function(section) {
+          section.classList.toggle("active", section.id === "section-" + id);
+        });
+        document.querySelectorAll(".dashboard-menu").forEach(function(button) {
+          button.classList.toggle("active", button.getAttribute("data-section") === id);
+        });
+        if (id === "variabel") {
+          pindahkanMapKe(document.getElementById("map-area"));
+        } else if (id === "hasil") {
+          pindahkanMapKe(hasilMapArea);
+          tampilkanHasil("e2sfca");
+        }
+        setTimeout(function() { map.invalidateSize(); }, 150);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function tampilkanHasil(mode) {
+        document.querySelectorAll(".result-tab").forEach(function(tab) {
+          tab.classList.toggle("active", tab.getAttribute("data-result") === mode);
+        });
+        document.querySelectorAll(".result-pane").forEach(function(pane) {
+          pane.classList.toggle("active", pane.id === "result-" + mode);
+        });
+
+        if (mode === "e2sfca") {
+          var id = hasilDropdown ? hasilDropdown.value : "indeks";
+          tampilkanPeta(id, petaData[id].deskripsi);
+        } else {
+          tampilkanPeta("lisa", petaData.lisa.deskripsi);
+        }
+        setTimeout(function() { map.invalidateSize(); }, 120);
+      }
+
+      document.querySelectorAll(".dashboard-menu").forEach(function(button) {
+        button.addEventListener("click", function() {
+          tampilkanSection(this.getAttribute("data-section"));
+        });
+      });
+
+      menuDropdown.addEventListener("change", function() {
+        tampilkanPeta(this.value);
+      });
+
+      if (hasilDropdown) {
+        hasilDropdown.addEventListener("change", function() {
+          if (document.getElementById("section-hasil").classList.contains("active")) {
+            tampilkanPeta(this.value);
+          }
+        });
+      }
+
+      document.querySelectorAll(".result-tab").forEach(function(tab) {
+        tab.addEventListener("click", function() {
+          tampilkanHasil(this.getAttribute("data-result"));
+        });
+      });
+
+      // Tampilkan peta awal ketika pengguna masuk ke menu Variabel.
+      // Hanya layer hasil/variabel yang dipilih yang akan ditambahkan ke peta.
+      matikanSemuaLayer();
+      setBounds();
+      setTimeout(function() { map.invalidateSize(); }, 250);
+    </script>
+  </body>
+</html>
