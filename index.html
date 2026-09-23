@@ -147,7 +147,6 @@
         margin-bottom: 8px;
       }
 
-
       /* =========================================================
          TEMPLATE DASHBOARD 3 MENU
          ========================================================= */
@@ -164,14 +163,14 @@
         color: #fff;
         border-bottom-left-radius: 18px;
         border-bottom-right-radius: 18px;
-        box-shadow: 0 4px 16px rgba(0,0,0,.12);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
       }
       .dashboard-kicker {
         margin: 0 0 6px;
         font-size: 12px;
         letter-spacing: 1.4px;
         text-transform: uppercase;
-        opacity: .85;
+        opacity: 0.85;
         font-weight: 700;
       }
       .dashboard-title {
@@ -185,7 +184,7 @@
         max-width: 850px;
         line-height: 1.6;
         font-size: 14px;
-        opacity: .92;
+        opacity: 0.92;
       }
       .dashboard-nav {
         display: flex;
@@ -196,50 +195,94 @@
       .dashboard-nav button {
         appearance: none;
         border: 0;
-        background: rgba(255,255,255,.12);
+        background: rgba(255, 255, 255, 0.12);
         color: #fff;
         padding: 12px 18px;
         border-radius: 10px 10px 0 0;
         cursor: pointer;
         font-size: 14px;
         font-weight: 700;
-        transition: background .18s ease, transform .18s ease;
+        transition:
+          background 0.18s ease,
+          transform 0.18s ease;
       }
-      .dashboard-nav button:hover { background: rgba(255,255,255,.2); }
+      .dashboard-nav button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
       .dashboard-nav button.active {
         background: #fff;
         color: #155e75;
       }
 
-      .dashboard-main { padding-top: 24px; }
-      .dashboard-section { display: none; animation: dashboardFade .2s ease; }
-      .dashboard-section.active { display: block; }
-      @keyframes dashboardFade { from { opacity: .2; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+      .dashboard-main {
+        padding-top: 24px;
+      }
+      .dashboard-section {
+        display: none;
+        animation: dashboardFade 0.2s ease;
+      }
+      .dashboard-section.active {
+        display: block;
+      }
+      @keyframes dashboardFade {
+        from {
+          opacity: 0.2;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-      .hero-card, .content-card, .method-card, .result-card {
+      .hero-card,
+      .content-card,
+      .method-card,
+      .result-card {
         background: #fff;
         border: 1px solid #e2e8f0;
         border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(15,23,42,.06);
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
         padding: 20px;
         margin-bottom: 18px;
       }
-      .hero-card h2, .content-card h2, .method-card h2, .result-card h2 {
+      .hero-card h2,
+      .content-card h2,
+      .method-card h2,
+      .result-card h2 {
         margin: 0 0 10px;
         color: #0f172a;
         font-size: 20px;
       }
-      .hero-card p, .content-card p, .method-card p, .result-card p {
+      .hero-card p,
+      .content-card p,
+      .method-card p,
+      .result-card p {
         color: #475569;
         line-height: 1.7;
       }
-      .section-lead { margin-top: 0; }
+      .section-lead {
+        margin-top: 0;
+      }
 
       .info-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         gap: 14px;
         margin-top: 16px;
+      }
+      .info-card ol {
+        margin: 12px 0 0 20px;
+        padding-left: 20px;
+      }
+
+      .info-card li {
+        margin-bottom: 12px;
+        line-height: 1.7;
+      }
+
+      .info-card li:last-child {
+        margin-bottom: 0;
       }
       .info-card {
         background: #f8fafc;
@@ -247,140 +290,240 @@
         border-radius: 12px;
         padding: 16px;
       }
-      .info-card strong { display:block; color:#0f172a; margin-bottom:5px; }
-      .info-card span { color:#64748b; font-size:13px; line-height:1.5; }
+      .info-card strong {
+        display: block;
+        color: #0f172a;
+        margin-bottom: 5px;
+      }
+      .info-card span {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.5;
+      }
 
-      .data-table-wrap { overflow-x: auto; margin-top: 12px; }
+      .data-table-wrap {
+        overflow-x: auto;
+        margin-top: 12px;
+      }
       .data-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 13px;
         min-width: 640px;
       }
-      .data-table th, .data-table td {
+      .data-table th,
+      .data-table td {
         padding: 10px 12px;
         border-bottom: 1px solid #e2e8f0;
         text-align: left;
         vertical-align: top;
       }
-      .data-table th { background:#f8fafc; color:#334155; font-weight:700; }
-      .data-table td { color:#475569; }
+      .data-table th {
+        background: #f8fafc;
+        color: #334155;
+        font-weight: 700;
+      }
+      .data-table td {
+        color: #475569;
+      }
 
       .method-flow {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0,1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 10px;
         margin-top: 16px;
       }
       .method-step {
         position: relative;
-        background:#f0fdfa;
-        border:1px solid #ccfbf1;
-        border-radius:12px;
-        padding:14px 12px;
-        text-align:center;
-        color:#134e4a;
-        font-size:13px;
-        font-weight:700;
+        background: #f0fdfa;
+        border: 1px solid #ccfbf1;
+        border-radius: 12px;
+        padding: 14px 12px;
+        text-align: center;
+        color: #134e4a;
+        font-size: 13px;
+        font-weight: 700;
       }
       .method-step:not(:last-child)::after {
-        content:'→';
-        position:absolute;
-        right:-12px;
-        top:50%;
-        transform:translateY(-50%);
-        color:#94a3b8;
-        font-size:18px;
-        z-index:2;
+        content: "→";
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 18px;
+        z-index: 2;
       }
 
       .workspace {
-        background:#fff;
-        border:1px solid #e2e8f0;
-        border-radius:14px;
-        box-shadow:0 3px 12px rgba(15,23,42,.06);
-        padding:18px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        padding: 18px;
       }
       .workspace-head {
-        display:flex;
-        justify-content:space-between;
-        gap:14px;
-        align-items:flex-start;
-        margin-bottom:14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: flex-start;
+        margin-bottom: 14px;
       }
-      .workspace-head h2 { margin:0 0 5px; color:#0f172a; font-size:21px; }
-      .workspace-head p { margin:0; color:#64748b; line-height:1.5; font-size:13px; }
+      .workspace-head h2 {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 21px;
+      }
+      .workspace-head p {
+        margin: 0;
+        color: #64748b;
+        line-height: 1.5;
+        font-size: 13px;
+      }
       .workspace-badge {
-        flex:0 0 auto;
-        background:#ecfeff;
-        color:#155e75;
-        border:1px solid #cffafe;
-        border-radius:999px;
-        padding:7px 11px;
-        font-size:12px;
-        font-weight:700;
+        flex: 0 0 auto;
+        background: #ecfeff;
+        color: #155e75;
+        border: 1px solid #cffafe;
+        border-radius: 999px;
+        padding: 7px 11px;
+        font-size: 12px;
+        font-weight: 700;
       }
 
       .result-tabs {
-        display:flex;
-        gap:8px;
-        margin-bottom:14px;
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
       }
       .result-tab {
-        border:1px solid #cbd5e1;
-        background:#fff;
-        color:#475569;
-        padding:9px 14px;
-        border-radius:9px;
-        cursor:pointer;
-        font-weight:700;
-        font-size:13px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #475569;
+        padding: 9px 14px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 13px;
       }
-      .result-tab.active { background:#0f766e; color:#fff; border-color:#0f766e; }
-      .result-pane { display:none; }
-      .result-pane.active { display:block; }
+      .result-tab.active {
+        background: #0f766e;
+        color: #fff;
+        border-color: #0f766e;
+      }
+      .result-pane {
+        display: none;
+      }
+      .result-pane.active {
+        display: block;
+      }
 
       .result-summary {
-        display:grid;
-        grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:12px;
-        margin-bottom:14px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 14px;
       }
       .result-summary .metric {
-        background:#f8fafc;
-        border:1px solid #e2e8f0;
-        border-radius:11px;
-        padding:13px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        padding: 13px;
       }
-      .metric-label { color:#64748b; font-size:12px; margin-bottom:5px; }
-      .metric-value { color:#0f172a; font-size:16px; font-weight:800; }
+      .metric-label {
+        color: #64748b;
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+      .metric-value {
+        color: #0f172a;
+        font-size: 16px;
+        font-weight: 800;
+      }
 
       .dashboard-note {
-        background:#fffbeb;
-        border:1px solid #fde68a;
-        color:#78350f;
-        border-radius:10px;
-        padding:12px 14px;
-        font-size:13px;
-        line-height:1.55;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #78350f;
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.55;
       }
       .dashboard-footer-note {
-        color:#64748b;
-        font-size:12px;
-        line-height:1.5;
-        margin-top:8px;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.5;
+        margin-top: 8px;
       }
 
       @media (max-width: 800px) {
-        .dashboard-container { width: 94%; }
-        .dashboard-header { margin-left:-3.2%; margin-right:-3.2%; padding-left:4%; padding-right:4%; }
-        .info-grid, .result-summary { grid-template-columns:1fr; }
-        .method-flow { grid-template-columns:1fr; }
-        .method-step:not(:last-child)::after { content:'↓'; right:auto; top:auto; bottom:-14px; left:50%; transform:translateX(-50%); }
-        .workspace-head { flex-direction:column; }
-        #map { height: 520px; }
-      }
+        .dashboard-container {
+          width: 94%;
+        }
+        .dashboard-header {
+          margin-left: -3.2%;
+          margin-right: -3.2%;
+          padding-left: 4%;
+          padding-right: 4%;
+        }
+        .info-grid,
+        .result-summary {
+          grid-template-columns: 1fr;
+        }
+        .method-flow {
+          grid-template-columns: 1fr;
+        }
+        .method-step:not(:last-child)::after {
+          content: "↓";
+          right: auto;
+          top: auto;
+          bottom: -14px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .workspace-head {
+          flex-direction: column;
+        }
+        #map {
+          height: 520px;
+        }
+        .method-card {
+          margin-top: 20px;
+        }
 
+        .formula-box {
+          background: #f8fafc;
+          border: 1px solid #d9e2ec;
+          border-radius: 12px;
+          padding: 20px;
+          margin-top: 18px;
+        }
+
+        .formula-box h4 {
+          margin-top: 0;
+          margin-bottom: 18px;
+        }
+
+        .formula {
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          padding: 20px;
+          text-align: center;
+          font-size: 22px;
+          font-family: "Times New Roman", serif;
+          margin-bottom: 18px;
+        }
+
+        .formula-description {
+          line-height: 1.7;
+        }
+
+        .formula-description p {
+          margin: 5px 0;
+        }
+      }
     </style>
     <title>Dashboard E2SFCA &amp; LISA</title>
   </head>
@@ -388,15 +531,24 @@
     <div class="dashboard-container">
       <header class="dashboard-header">
         <p class="dashboard-kicker">Dashboard Visualisasi Spasial</p>
-        <h1 class="dashboard-title">E2SFCA &amp; LISA</h1>
-        <p class="dashboard-subtitle">
-          Dashboard interaktif untuk menjelaskan pendahuluan penelitian, variabel yang digunakan,
-          serta hasil perhitungan indeks E2SFCA dan analisis LISA dalam satu halaman.
-        </p>
+        <h1 class="dashboard-title">
+          Indeks Aksesibilitas Spasial Fasilitas Kesehatan
+        </h1>
+        <p class="dashboard-subtitle"></p>
         <nav class="dashboard-nav" aria-label="Navigasi utama">
-          <button type="button" class="dashboard-menu active" data-section="pendahuluan">Pendahuluan</button>
-          <button type="button" class="dashboard-menu" data-section="variabel">Variabel</button>
-          <button type="button" class="dashboard-menu" data-section="hasil">Hasil Analisis</button>
+          <button
+            type="button"
+            class="dashboard-menu active"
+            data-section="pendahuluan"
+          >
+            Pendahuluan
+          </button>
+          <button type="button" class="dashboard-menu" data-section="variabel">
+            Variabel
+          </button>
+          <button type="button" class="dashboard-menu" data-section="hasil">
+            Hasil Analisis
+          </button>
         </nav>
       </header>
 
@@ -406,24 +558,141 @@
              ===================================================== -->
         <section id="section-pendahuluan" class="dashboard-section active">
           <div class="hero-card">
-            <h2>Pendahuluan</h2>
-            <p class="section-lead">
-              Bagian ini digunakan untuk menjelaskan latar belakang, tujuan, data yang digunakan,
-              dan metode perhitungan dalam penelitian. Teks di bawah sengaja dibuat sebagai template
-              agar dapat Anda sesuaikan dengan narasi penelitian yang sebenarnya.
+            <h2>
+              Urgensi Tata Ruang dan Misi Keadilan Akses Kesehatan Kabupaten
+              Pangandaran
+            </h2>
+            <p class="section-lead" style="text-align: justify">
+              Pemerataan pelayanan medis merupakan hak mendasar bagi setiap
+              warga, namun Kabupaten Pangandaran masih dihadapkan pada tantangan
+              besar berupa ketimpangan distribusi sumber daya yang tajam. Saat
+              ini, alokasi tenaga kesehatan jaminan publik menumpuk ekstrem di
+              perkotaan pesisir selatan karena menjadi basis operasional rumah
+              sakit rujukan utama, sementara mayoritas desa pedalaman mencatat
+              kelangkaan kritis hingga nol nakes aktual. Kondisi asimetris ini
+              memaksa masyarakat pelosok melakukan mobilitas pengobatan lintas
+              batas yang melelahkan, padahal laju ambulans gawat darurat di
+              sektor utara dihambat secara mekanis oleh topografi perbukitan
+              pegunungan yang terjal, lereng curam, serta ancaman musiman
+              seperti tanah longsor dan banjir yang periodik melumpuhkan
+              jaringan jalan utama. Karena indikator rasio per kapita
+              konvensional selama ini abai terhadap peluruhan jarak dan gagal
+              mendeteksi titik buta (blind-spot) pelayanan, penelitian dalam
+              dashboard ini hadir untuk mengintegrasikan pangkalan SatuSehat
+              Kemenkes, data BPS, dan citra satelit multi-sensor menggunakan
+              kerangka sains data. Melalui fusi data skala besar tersebut, riset
+              ini bertujuan utama menghitung Indeks Aksesibilitas Komposit di 93
+              desa berdasarkan batas waktu emas rujukan pemerintah, yaitu
+              maksimal 60 menit ke Puskesmas primer dan 120 menit ke rumah sakit
+              rujukan lanjutan. Selanjutnya, sistem mengoperasikan algoritma
+              pemelajaran mesin Random Forest Regression untuk membongkar secara
+              objektif apakah elemen penutup lahan alami atau justru koridor
+              infrastruktur jalan yang paling sensitif mendikte kelayakan
+              jangkauan medis. Seluruh rangkaian analisis ini dikunci dengan
+              dekomposisi statistik lokal LISA untuk melokalisasi koordinat
+              kantong wilayah terisolasi sejati, menguji secara matematis apakah
+              ledakan populasi kota memicu kemacetan antrean (congestion
+              effect), serta merumuskan cetak biru lokasi intervensi pembangunan
+              faskes baru berstandar Kelas Rawat Inap Standar (KRIS) demi
+              mewujudkan keadilan tata ruang kesehatan daerah yang inklusif.
             </p>
             <div class="info-grid">
-              <div class="info-card">
-                <strong>Latar Belakang</strong>
-                <span>Tambahkan uraian masalah, konteks wilayah kajian, dan alasan analisis aksesibilitas spasial dilakukan.</span>
-              </div>
-              <div class="info-card">
+              <!-- <div class="info-card">
+                <strong
+                  >Urgensi Tata Ruang dan Misi Keadilan Akses Kesehatan
+                  Kabupaten Pangandaran</strong
+                >
+                <span
+                  >Pemerataan pelayanan medis merupakan hak mendasar bagi setiap
+                  warga, namun Kabupaten Pangandaran masih dihadapkan pada
+                  tantangan besar berupa ketimpangan distribusi sumber daya yang
+                  tajam. Saat ini, alokasi tenaga kesehatan jaminan publik
+                  menumpuk ekstrem di perkotaan pesisir selatan karena menjadi
+                  basis operasional rumah sakit rujukan utama, sementara
+                  mayoritas desa pedalaman mencatat kelangkaan kritis hingga nol
+                  nakes aktual. Kondisi asimetris ini memaksa masyarakat pelosok
+                  melakukan mobilitas pengobatan lintas batas yang melelahkan,
+                  padahal laju ambulans gawat darurat di sektor utara dihambat
+                  secara mekanis oleh topografi perbukitan pegunungan yang
+                  terjal, lereng curam, serta ancaman musiman seperti tanah
+                  longsor dan banjir yang periodik melumpuhkan jaringan jalan
+                  utama. Karena indikator rasio per kapita konvensional selama
+                  ini abai terhadap peluruhan jarak dan gagal mendeteksi titik
+                  buta (blind-spot) pelayanan, penelitian dalam dashboard ini
+                  hadir untuk mengintegrasikan pangkalan SatuSehat Kemenkes,
+                  data BPS, dan citra satelit multi-sensor menggunakan kerangka
+                  sains data. Melalui fusi data skala besar tersebut, riset ini
+                  bertujuan utama menghitung Indeks Aksesibilitas Komposit di 93
+                  desa berdasarkan batas waktu emas rujukan pemerintah, yaitu
+                  maksimal 60 menit ke Puskesmas primer dan 120 menit ke rumah
+                  sakit rujukan lanjutan. Selanjutnya, sistem mengoperasikan
+                  algoritma pemelajaran mesin Random Forest Regression untuk
+                  membongkar secara objektif apakah elemen penutup lahan alami
+                  atau justru koridor infrastruktur jalan yang paling sensitif
+                  mendikte kelayakan jangkauan medis. Seluruh rangkaian analisis
+                  ini dikunci dengan dekomposisi statistik lokal LISA untuk
+                  melokalisasi koordinat kantong wilayah terisolasi sejati,
+                  menguji secara matematis apakah ledakan populasi kota memicu
+                  kemacetan antrean (congestion effect), serta merumuskan cetak
+                  biru lokasi intervensi pembangunan faskes baru berstandar
+                  Kelas Rawat Inap Standar (KRIS) demi mewujudkan keadilan tata
+                  ruang kesehatan daerah yang inklusif.</span
+                >
+              </div> -->
+              <!-- <div class="info-card">
                 <strong>Tujuan</strong>
-                <span>Tambahkan tujuan penelitian dan pertanyaan yang ingin dijawab melalui E2SFCA dan LISA.</span>
-              </div>
+                <span
+                  >Melalui integrasi big data spasial lintas sektoral ini, misi
+                  utama penelitian yang dijalankan adalah membangun sebuah model
+                  pintar yang mampu mengukur nilai kelayakan akses layanan
+                  kesehatan di seluruh penjuru Pangandaran secara adil dan
+                  transparan guna mendukung lahirnya kebijakan daerah berbasis
+                  bukti (evidence-based policy). Komputasi pertama dilakukan
+                  dengan menghitung Indeks Aksesibilitas Komposit di tingkat
+                  tapak desa menggunakan algoritma matematika tingkat lanjut
+                  yang diselaraskan dengan batas waktu emas rujukan medis darat
+                  pemerintah, yaitu maksimal 60 menit untuk mencapai Puskesmas
+                  primer dan 120 menit menuju rumah sakit rujukan lanjutan.
+                  Selanjutnya, sistem mengoperasikan algoritma pemelajaran mesin
+                  Random Forest untuk membedah jalinan hubungan yang rumit
+                  antara akses kesehatan terhadap interaksi kondisi lingkungan
+                  fisik, curah hujan, hingga paparan emisi polutan udara guna
+                  mendeteksi secara objektif peringkat faktor penentu mana yang
+                  paling sensitif mengunci keterisolasian warga lokal. Seluruh
+                  rangkaian analisis ini dikunci dengan memetakan ketergantungan
+                  ruang lewat peta klaster autokorelasi lokal guna melokalisasi
+                  koordinat kantong-kantong desa yang kritis, menguji apakah
+                  meledaknya populasi kota benar-benar memicu kelumpuhan antrean
+                  pelayanan di puskesmas, serta merumuskan cetak biru
+                  pembangunan fisik fasilitas kesehatan baru yang inklusif tepat
+                  pada konsentrasi rumah berpenghuni riil masyarakat.</span
+                >
+              </div> -->
               <div class="info-card">
                 <strong>Wilayah Kajian</strong>
-                <span>Tambahkan nama wilayah kajian, periode analisis, dan informasi spasial penting lainnya.</span>
+
+                <ol>
+                  <li>
+                    <strong>Cakupan Administratif:</strong>
+                    Seluruh yurisdiksi administratif Kabupaten Pangandaran,
+                    Provinsi Jawa Barat.
+                  </li>
+
+                  <li>
+                    <strong>Skala Unit Spasial Mikro:</strong>
+                    Analisis pada tingkat desa yang berjumlah 93 desa yang
+                    tersebar di 10 Kecamatan dengan luas wilayah daratan total
+                    sebesar 962,13 km².
+                  </li>
+
+                  <li>
+                    <strong>Karakteristik Fisik Wilayah:</strong>
+                    Wilayah ini memiliki asimetri rona lingkungan yang tajam,
+                    sektor utara didominasi topografi perbukitan terjal
+                    pegunungan rawan longsor, sedangkan sektor selatan merupakan
+                    koridor dataran rendah pesisir pantai Samudra Hindia.
+                  </li>
+                </ol>
               </div>
             </div>
           </div>
@@ -431,44 +700,296 @@
           <div class="content-card">
             <h2>Data yang Digunakan</h2>
             <p>
-              File qgis2web yang sedang digunakan sudah memuat layer variabel berikut. Sumber data,
-              tahun, satuan, dan keterangan rinci dapat Anda lengkapi pada tabel ini tanpa mengubah mesin peta.
+              Penelitian ini menerapkan metode fusi data skala besar
+              (large-scale data fusion) yang memadukan pangkalan data tabular
+              resmi dengan 20 variabel prediktor spasial raster beresolusi
+              seragam metrik 30 Meter:
             </p>
             <div class="data-table-wrap">
               <table class="data-table">
                 <thead>
-                  <tr><th>Kelompok</th><th>Data/Variabel</th><th>Keterangan</th></tr>
+                  <tr>
+                    <th>Kelompok</th>
+                    <th>Data/Variabel</th>
+                    <th>Keterangan</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  <tr><td>Lingkungan</td><td>Curah Hujan, NDVI, Kecepatan Angin</td><td>Variabel lingkungan yang tersedia pada peta interaktif.</td></tr>
-                  <tr><td>Kualitas Udara</td><td>SO₂, NO₂, O₃, CO, AOD</td><td>Variabel kualitas udara yang tersedia pada peta interaktif.</td></tr>
-                  <tr><td>Topografi</td><td>Elevasi, Slope, TWI, TRI</td><td>Variabel kondisi/topografi wilayah.</td></tr>
-                  <tr><td>Akses &amp; Risiko</td><td>Jarak ke Sungai, Jarak ke Jalan, Jarak ke Pantai, Banjir, Longsor, FWI</td><td>Variabel jarak dan kerawanan yang tersedia dalam proyek.</td></tr>
-                  <tr><td>Sosial</td><td>Rasio Jenis Kelamin</td><td>Variabel sosial yang tersedia dalam proyek.</td></tr>
-                  <tr><td>Hasil Analisis</td><td>Indeks E2SFCA dan LISA</td><td>Layer hasil yang sudah tersedia pada file qgis2web.</td></tr>
+                  <!-- Lingkungan -->
+                  <tr>
+                    <td rowspan="3"><strong>Lingkungan</strong></td>
+                    <td><strong>Curah Hujan</strong></td>
+                    <td>
+                      Total air hujan yang turun (untuk melihat hambatan cuaca).
+                    </td>
+                    <td>Satelit CHIRPS (UC Santa Barbara)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>NDVI (Kehijauan)</strong></td>
+                    <td>
+                      Tingkat kerapatan atau lebatnya tanaman dan hutan di desa.
+                    </td>
+                    <td>Satelit Landsat 8 (USGS/NASA)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>Kecepatan Angin</strong></td>
+                    <td>
+                      Kecepatan tiupan angin di sekitar permukaan tanah desa.
+                    </td>
+                    <td>Satelit ECMWF ERA5-Land Eropa</td>
+                  </tr>
+
+                  <!-- Kualitas Udara -->
+                  <tr>
+                    <td rowspan="5"><strong>Kualitas Udara</strong></td>
+                    <td><strong>SO₂ (Sulfur Dioksida)</strong></td>
+                    <td>
+                      Polusi gas akibat aktivitas industri atau asap kendaraan.
+                    </td>
+                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>NO₂ (Nitrogen Dioksida)</strong></td>
+                    <td>
+                      Polusi gas yang biasa dihasilkan dari pembakaran mesin
+                      kendaraan.
+                    </td>
+                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>O₃ (Ozon)</strong></td>
+                    <td>
+                      Lapisan gas di udara yang memengaruhi kondisi pernapasan.
+                    </td>
+                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>CO (Karbon Monoksida)</strong></td>
+                    <td>
+                      Gas beracun tak berwarna hasil dari sisa pembakaran
+                      kendaraan.
+                    </td>
+                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>AOD (Kekeruhan Udara)</strong></td>
+                    <td>
+                      Tingkat kepekatan debu atau asap yang melayang di udara.
+                    </td>
+                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                  </tr>
+
+                  <!-- Topografi -->
+                  <tr>
+                    <td rowspan="4"><strong>Topografi</strong></td>
+                    <td><strong>Elevasi (Ketinggian)</strong></td>
+                    <td>
+                      Tinggi rendahnya daratan desa dari permukaan air laut.
+                    </td>
+                    <td>Badan Informasi Geospasial (DEMNAS BIG)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>Slope (Kemiringan)</strong></td>
+                    <td>
+                      Tingkat kecuraman tanjakan atau turunan tanah di desa.
+                    </td>
+                    <td>Hasil Olah Data DEMNAS BIG</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>TRI (Kekasaran Medan)</strong></td>
+                    <td>
+                      Tingkat ketidakrataan atau kasarnya permukaan bumi
+                      setempat.
+                    </td>
+                    <td>Hasil Olah Data DEMNAS BIG</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>TWI (Kelembapan Lahan)</strong></td>
+                    <td>Potensi area tanah di lapangan untuk menampung air.</td>
+                    <td>Hasil Olah Data DEMNAS BIG</td>
+                  </tr>
+
+                  <!-- Akses & Risiko -->
+                  <tr>
+                    <td rowspan="7"><strong>Akses &amp; Risiko</strong></td>
+                    <td><strong>Jarak ke Jalan</strong></td>
+                    <td>
+                      Jarak posisi rumah/desa menuju koridor jalan utama
+                      terdekat.
+                    </td>
+                    <td>Badan Informasi Geospasial (BIG) &amp; OSM</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>Jarak ke Sungai</strong></td>
+                    <td>Jarak area hunian ke aliran sungai terdekat.</td>
+                    <td>Badan Informasi Geospasial (BIG)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>Jarak ke Pantai</strong></td>
+                    <td>Kedekatan wilayah desa dengan garis pantai selatan.</td>
+                    <td>Badan Informasi Geospasial (BIG)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>Banjir</strong></td>
+                    <td>Tingkat potensi bahaya luapan air di suatu desa.</td>
+                    <td>Portal inaRISK BNPB Indonesia</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>Longsor</strong></td>
+                    <td>
+                      Potensi bahaya pergeseran tanah di daerah perbukitan.
+                    </td>
+                    <td>Portal inaRISK BNPB Indonesia</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>FWI (Indeks Kebakaran)</strong></td>
+                    <td>
+                      Tingkat kemudahan lingkungan sekitar untuk memicu
+                      kebakaran.
+                    </td>
+                    <td>Satelit Copernicus Eropa (C3S)</td>
+                  </tr>
+
+                  <tr>
+                    <td><strong>Tutupan Lahan Terbangun</strong></td>
+                    <td>
+                      Area di desa yang sudah menjadi bangunan atau pemukiman.
+                    </td>
+                    <td>Satelit Landsat 8 (USGS/NASA)</td>
+                  </tr>
+
+                  <!-- Sosial -->
+                  <tr>
+                    <td rowspan="2"><strong>Demografi</strong></td>
+                    <td><strong>Rasio Jenis Kelamin</strong></td>
+                    <td>
+                      Perbandingan jumlah warga laki-laki dan perempuan di desa.
+                    </td>
+                    <td>Badan Pusat Statistik (BPS) Pangandaran</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-            <p class="dashboard-footer-note">Catatan: sumber, tahun, satuan, dan definisi operasional belum diisi karena informasi tersebut tidak terdapat di file qgis2web.</p>
+            <!-- <p class="dashboard-footer-note">
+              Catatan: sumber, tahun, satuan, dan definisi operasional belum
+              diisi karena informasi tersebut tidak terdapat di file qgis2web.
+            </p> -->
           </div>
 
           <div class="method-card">
             <h2>Metode Perhitungan</h2>
-            <p>
-              Gunakan bagian ini untuk menjelaskan tahapan pengolahan data. Skema berikut merupakan
-              template visual dan dapat disesuaikan dengan prosedur penelitian Anda.
-            </p>
+            <!-- <p>
+              Gunakan bagian ini untuk menjelaskan tahapan pengolahan data.
+              Skema berikut merupakan template visual dan dapat disesuaikan
+              dengan prosedur penelitian Anda.
+            </p> -->
             <div class="method-flow">
               <div class="method-step">Data</div>
               <div class="method-step">Pengolahan Variabel</div>
-              <div class="method-step">E2SFCA</div>
-              <div class="method-step">Indeks Aksesibilitas</div>
-              <div class="method-step">LISA</div>
+              <div class="method-step">Multi-Tier E2SFCA</div>
+              <div class="method-step">Random Forest ML</div>
+              <div class="method-step">Analisis LISA</div>
             </div>
-            <div class="dashboard-note" style="margin-top:16px;">
-              Tambahkan rumus E2SFCA, parameter catchment area, bobot, fungsi jarak, serta prosedur LISA
-              sesuai metode penelitian Anda pada bagian ini.
+            <div class="method-card">
+              <h3>Metode Perhitungan E2SFCA</h3>
+
+              <p>
+                Metode
+                <strong
+                  >Enhanced Two-Step Floating Catchment Area (E2SFCA)</strong
+                >
+                digunakan untuk mengukur aksesibilitas spasial masyarakat
+                terhadap fasilitas kesehatan dengan mempertimbangkan
+                ketersediaan fasilitas dan jarak.
+              </p>
+
+              <div class="formula-box">
+                <h4>Langkah 1 — Rasio Fasilitas terhadap Penduduk</h4>
+
+                <div class="formula">
+                  R<sub>j</sub> =
+                  <span class="fraction">
+                    <span class="numerator">S<sub>j</sub></span>
+                    <span class="denominator">
+                      &sum;<sub>k : d<sub>kj</sub> &le; d<sub>0</sub></sub>
+                      P<sub>k</sub> W(d<sub>kj</sub>)
+                    </span>
+                  </span>
+                </div>
+
+                <div class="formula-description">
+                  <p>
+                    <strong>R<sub>j</sub></strong> = rasio fasilitas kesehatan
+                    pada lokasi j
+                  </p>
+                  <p>
+                    <strong>S<sub>j</sub></strong> = kapasitas fasilitas
+                    kesehatan pada lokasi j
+                  </p>
+                  <p>
+                    <strong>P<sub>k</sub></strong> = jumlah penduduk wilayah k
+                  </p>
+                  <p>
+                    <strong>d<sub>kj</sub></strong> = jarak antara wilayah k dan
+                    fasilitas j
+                  </p>
+                  <p>
+                    <strong>W(d<sub>kj</sub>)</strong> = bobot berdasarkan jarak
+                  </p>
+                  <p>
+                    <strong>d<sub>0</sub></strong> = batas jarak pencarian
+                  </p>
+                </div>
+              </div>
+
+              <div class="formula-box">
+                <h4>Langkah 2 — Indeks Aksesibilitas</h4>
+
+                <div class="formula">
+                  A<sub>i</sub> = &sum;<sub
+                    >j : d<sub>ij</sub> &le; d<sub>0</sub></sub
+                  >
+                  R<sub>j</sub> W(d<sub>ij</sub>)
+                </div>
+
+                <div class="formula-description">
+                  <p>
+                    <strong>A<sub>i</sub></strong> = nilai aksesibilitas wilayah
+                    i
+                  </p>
+                  <p>
+                    <strong>R<sub>j</sub></strong> = rasio fasilitas dari
+                    langkah pertama
+                  </p>
+                  <p>
+                    <strong>d<sub>ij</sub></strong> = jarak antara wilayah i dan
+                    fasilitas j
+                  </p>
+                  <p>
+                    <strong>W(d<sub>ij</sub>)</strong> = bobot berdasarkan jarak
+                  </p>
+                </div>
+              </div>
             </div>
+            <!-- <div class="dashboard-note" style="margin-top: 16px">
+              Tambahkan rumus E2SFCA, parameter catchment area, bobot, fungsi
+              jarak, serta prosedur LISA sesuai metode penelitian Anda pada
+              bagian ini.
+            </div> -->
           </div>
         </section>
 
@@ -480,7 +1001,10 @@
             <div class="workspace-head">
               <div>
                 <h2>Variabel Spasial</h2>
-                <p>Pilih satu variabel untuk menampilkan layer, legenda warna, dan deskripsinya.</p>
+                <p>
+                  Pilih satu variabel untuk menampilkan layer, legenda warna,
+                  dan deskripsinya.
+                </p>
               </div>
               <div class="workspace-badge">Peta Interaktif</div>
             </div>
@@ -488,7 +1012,9 @@
             <div class="kontrol-panel">
               <label for="pilihPeta">Pilih variabel spasial:</label>
               <select id="pilihPeta">
-                <option value="" disabled selected>-- Pilih Variabel Peta --</option>
+                <option value="" disabled selected>
+                  -- Pilih Variabel Peta --
+                </option>
                 <option value="curah_hujan">Curah Hujan</option>
                 <option value="ndvi">NDVI (Kerapatan Vegetasi)</option>
                 <option value="windspeed">Kecepatan Angin</option>
@@ -513,10 +1039,17 @@
             </div>
 
             <div id="map-area">
-              <div id="map"><div id="legendaPeta" style="display:none;"></div></div>
+              <div id="map">
+                <div id="legendaPeta" style="display: none"></div>
+              </div>
               <div class="deskripsi-panel">
-                <h3 class="deskripsi-judul" id="judulDeskripsi">Pilih Variabel</h3>
-                <p id="teksDeskripsi">Pilih variabel pada dropdown untuk menampilkan peta, legenda, dan deskripsi variabel.</p>
+                <h3 class="deskripsi-judul" id="judulDeskripsi">
+                  Pilih Variabel
+                </h3>
+                <p id="teksDeskripsi">
+                  Pilih variabel pada dropdown untuk menampilkan peta, legenda,
+                  dan deskripsi variabel.
+                </p>
               </div>
             </div>
           </div>
@@ -528,48 +1061,78 @@
         <section id="section-hasil" class="dashboard-section">
           <div class="result-card">
             <h2>Hasil Perhitungan</h2>
-            <p>
-              Menu ini menggunakan layer hasil yang sudah ada pada proyek qgis2web. Pilih tab E2SFCA
-              atau LISA untuk menampilkan hasil pada peta yang sama.
-            </p>
+            <!-- <p>
+              Menu ini menggunakan layer hasil yang sudah ada pada proyek
+              qgis2web. Pilih tab E2SFCA atau LISA untuk menampilkan hasil pada
+              peta yang sama.
+            </p> -->
 
             <div class="result-tabs" role="tablist" aria-label="Hasil analisis">
-              <button type="button" class="result-tab active" data-result="e2sfca">E2SFCA</button>
-              <button type="button" class="result-tab" data-result="lisa">LISA</button>
+              <button
+                type="button"
+                class="result-tab active"
+                data-result="e2sfca"
+              >
+                E2SFCA
+              </button>
+              <button type="button" class="result-tab" data-result="lisa">
+                LISA
+              </button>
             </div>
 
             <div id="result-e2sfca" class="result-pane active">
               <div class="result-summary">
-                <div class="metric"><div class="metric-label">Layer hasil</div><div class="metric-value">Indeks E2SFCA</div></div>
-                <div class="metric"><div class="metric-label">Visualisasi</div><div class="metric-value">Peta tematik</div></div>
-                <div class="metric"><div class="metric-label">Legenda</div><div class="metric-value">Kelas nilai</div></div>
+                <div class="metric">
+                  <div class="metric-label">Layer hasil</div>
+                  <div class="metric-value">Indeks E2SFCA</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Visualisasi</div>
+                  <div class="metric-value">Peta tematik</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Legenda</div>
+                  <div class="metric-value">Kelas nilai</div>
+                </div>
               </div>
-              <div class="kontrol-panel">
+              <!-- <div class="kontrol-panel">
                 <label for="pilihHasil">Layer hasil E2SFCA:</label>
                 <select id="pilihHasil">
                   <option value="indeks" selected>Indeks E2SFCA</option>
                   <option value="pang">Indeks E2SFCA (Pang)</option>
                 </select>
-              </div>
-              <div class="deskripsi-panel" style="margin-top:0;">
+              </div> -->
+              <div class="deskripsi-panel" style="margin-top: 0">
                 <h3 class="deskripsi-judul">Indeks E2SFCA</h3>
-                <p id="deskripsiE2sfca">Peta ini menampilkan layer Indeks E2SFCA yang sudah tersedia pada proyek qgis2web.</p>
+                <p id="deskripsiE2sfca">
+                  Peta ini menampilkan layer Indeks E2SFCA yang sudah tersedia
+                  pada proyek qgis2web.
+                </p>
               </div>
             </div>
 
             <div id="result-lisa" class="result-pane">
               <div class="result-summary">
-                <div class="metric"><div class="metric-label">Analisis</div><div class="metric-value">LISA</div></div>
-                <div class="metric"><div class="metric-label">Klasifikasi</div><div class="metric-value">Hotspot / Coldspot</div></div>
-                <div class="metric"><div class="metric-label">Visualisasi</div><div class="metric-value">Peta klaster</div></div>
+                <div class="metric">
+                  <div class="metric-label">Analisis</div>
+                  <div class="metric-value">LISA</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Klasifikasi</div>
+                  <div class="metric-value">Hotspot / Coldspot</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Visualisasi</div>
+                  <div class="metric-value">Peta klaster</div>
+                </div>
               </div>
               <div class="dashboard-note">
-                Layer LISA pada proyek qgis2web memuat kategori High-High, High-Low, Low-High,
-                Low-Low, dan Not Significant.
+                Layer LISA pada proyek qgis2web memuat kategori High-High,
+                High-Low, Low-High, Low-Low, dan Not Significant.
               </div>
             </div>
 
-            <div id="hasil-map-area" style="margin-top:16px;"></div>
+            <div id="hasil-map-area" style="margin-top: 16px"></div>
           </div>
         </section>
       </main>
@@ -4478,36 +5041,540 @@
       // =========================================================================================
 
       var petaData = {
-        curah_hujan: { judul: "Curah Hujan", layer: layer_peta_curah_hujan_1, deskripsi: "Variabel ini menunjukkan intensitas Curah Hujan di wilayah tersebut. Warna yang lebih pekat menunjukkan curah hujan yang lebih tinggi." },
-        ndvi: { judul: "NDVI (Normalized Difference Vegetation Index)", layer: layer_peta_ndvi_2, deskripsi: "Variabel ini menunjukkan tingkat kerapatan atau kehijauan vegetasi. Semakin hijau warnanya, semakin lebat tutupan vegetasinya." },
-        windspeed: { judul: "Kecepatan Angin", layer: layer_peta_windspeed_3, deskripsi: "Variabel ini memetakan rata-rata kecepatan angin di area studi." },
-        so2: { judul: "Konsentrasi SO2", layer: layer_peta_SO2_4, deskripsi: "Peta ini menampilkan sebaran polutan Sulfur Dioksida (SO2) di udara." },
-        no2: { judul: "Konsentrasi NO2", layer: layer_peta_NO2_5, deskripsi: "Peta ini menampilkan sebaran polutan Nitrogen Dioksida (NO2)." },
-        o3: { judul: "Konsentrasi Ozon (O3)", layer: layer_peta_O3_6, deskripsi: "Peta ini menunjukkan konsentrasi Ozon permukaan (Ground Level Ozone)." },
-        co: { judul: "Konsentrasi CO", layer: layer_peta_CO_7, deskripsi: "Peta ini menunjukkan tingkat Karbon Monoksida (CO) di udara." },
-        aod: { judul: "Aerosol Optical Depth (AOD)", layer: layer_peta_AOD_8, deskripsi: "Variabel AOD digunakan untuk memantau kualitas udara dan sebaran partikel aerosol/debu." },
-        elevasi: { judul: "Elevasi (Ketinggian)", layer: layer_peta_elevasi_9, deskripsi: "Variabel ini menunjukkan tingkat ketinggian wilayah di atas permukaan laut." },
-        slope: { judul: "Slope (Kemiringan Lereng)", layer: layer_peta_slope_10, deskripsi: "Peta ini menggambarkan derajat kemiringan permukaan lahan." },
-        twi: { judul: "Topographic Wetness Index (TWI)", layer: layer_peta_TWI_11, deskripsi: "TWI menggambarkan akumulasi aliran permukaan dan tingkat kebasahan tanah secara topografis." },
-        sungai: { judul: "Jarak ke Sungai", layer: layer_peta_sungai_12, deskripsi: "Variabel ini mengukur kedekatan suatu area terhadap aliran sungai." },
-        jalan: { judul: "Jarak ke Jalan Utama", layer: layer_peta_jalan_13, deskripsi: "Menggambarkan aksesibilitas wilayah diukur dari jaraknya ke jaringan jalan utama." },
-        banjir: { judul: "Kerawanan Banjir", layer: layer_peta_banjir_14, deskripsi: "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap bencana banjir." },
-        longsor: { judul: "Kerawanan Longsor", layer: layer_peta_longsor_15, deskripsi: "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap pergerakan tanah atau tanah longsor." },
-        ndbi: { judul: "NDBI (Tutupan Lahan Terbangun)", layer: layer_peta_ndbi_16, deskripsi: "Normalized Difference Built-up Index (NDBI) digunakan untuk memetakan luasan area perkotaan atau lahan terbangun." },
-        jk: { judul: "Rasio Jenis Kelamin", layer: layer_peta_jk_17, deskripsi: "Menunjukkan perbandingan jumlah penduduk laki-laki terhadap penduduk perempuan (Sex Ratio)." },
-        pantai: { judul: "Jarak ke Garis Pantai", layer: layer_peta_pantai_18, deskripsi: "Variabel jarak absolut (dalam meter/km) dari daratan ke wilayah pesisir atau garis pantai." },
-        fwi: { judul: "Fire Weather Index (FWI)", layer: layer_peta_FWI_19, deskripsi: "Menunjukkan tingkat kerawanan cuaca terhadap kejadian kebakaran hutan dan lahan." },
-        pang: { judul: "Indeks E2SFCA (Pang)", layer: layer_Peta_pang_kec_23, deskripsi: "Peta ini menunjukkan aksesibilitas spasial layanan menggunakan metode E2SFCA (Variabel Pang)." },
-        indeks: { judul: "Indeks E2SFCA", layer: layer_peta_indeks_20, deskripsi: "Peta ini menunjukkan Indeks Enhanced Two-Step Floating Catchment Area (E2SFCA)." },
-        tri: { judul: "Terrain Ruggedness Index (TRI)", layer: layer_peta_TRI_21, deskripsi: "Mengukur tingkat kekasaran bentuk muka bumi atau morfologi (Ruggedness)." },
-        lisa: { judul: "LISA (Hotspot/Coldspot)", layer: layer_LISA_22, deskripsi: "Peta signifikansi spasial lokal. Kategori yang tersedia: High-High, High-Low, Low-High, Low-Low, dan Not Significant." }
+        curah_hujan: {
+          judul: "Curah Hujan",
+          layer: layer_peta_curah_hujan_1,
+          deskripsi:
+            "Variabel ini menunjukkan intensitas Curah Hujan di wilayah tersebut. Warna yang lebih pekat menunjukkan curah hujan yang lebih tinggi.",
+        },
+        ndvi: {
+          judul: "NDVI (Normalized Difference Vegetation Index)",
+          layer: layer_peta_ndvi_2,
+          deskripsi:
+            "Variabel ini menunjukkan tingkat kerapatan atau kehijauan vegetasi. Semakin hijau warnanya, semakin lebat tutupan vegetasinya.",
+        },
+        windspeed: {
+          judul: "Kecepatan Angin",
+          layer: layer_peta_windspeed_3,
+          deskripsi:
+            "Variabel ini memetakan rata-rata kecepatan angin di area studi.",
+        },
+        so2: {
+          judul: "Konsentrasi SO2",
+          layer: layer_peta_SO2_4,
+          deskripsi:
+            "Peta ini menampilkan sebaran polutan Sulfur Dioksida (SO2) di udara.",
+        },
+        no2: {
+          judul: "Konsentrasi NO2",
+          layer: layer_peta_NO2_5,
+          deskripsi:
+            "Peta ini menampilkan sebaran polutan Nitrogen Dioksida (NO2).",
+        },
+        o3: {
+          judul: "Konsentrasi Ozon (O3)",
+          layer: layer_peta_O3_6,
+          deskripsi:
+            "Peta ini menunjukkan konsentrasi Ozon permukaan (Ground Level Ozone).",
+        },
+        co: {
+          judul: "Konsentrasi CO",
+          layer: layer_peta_CO_7,
+          deskripsi:
+            "Peta ini menunjukkan tingkat Karbon Monoksida (CO) di udara.",
+        },
+        aod: {
+          judul: "Aerosol Optical Depth (AOD)",
+          layer: layer_peta_AOD_8,
+          deskripsi:
+            "Variabel AOD digunakan untuk memantau kualitas udara dan sebaran partikel aerosol/debu.",
+        },
+        elevasi: {
+          judul: "Elevasi (Ketinggian)",
+          layer: layer_peta_elevasi_9,
+          deskripsi:
+            "Variabel ini menunjukkan tingkat ketinggian wilayah di atas permukaan laut.",
+        },
+        slope: {
+          judul: "Slope (Kemiringan Lereng)",
+          layer: layer_peta_slope_10,
+          deskripsi:
+            "Peta ini menggambarkan derajat kemiringan permukaan lahan.",
+        },
+        twi: {
+          judul: "Topographic Wetness Index (TWI)",
+          layer: layer_peta_TWI_11,
+          deskripsi:
+            "TWI menggambarkan akumulasi aliran permukaan dan tingkat kebasahan tanah secara topografis.",
+        },
+        sungai: {
+          judul: "Jarak ke Sungai",
+          layer: layer_peta_sungai_12,
+          deskripsi:
+            "Variabel ini mengukur kedekatan suatu area terhadap aliran sungai.",
+        },
+        jalan: {
+          judul: "Jarak ke Jalan Utama",
+          layer: layer_peta_jalan_13,
+          deskripsi:
+            "Menggambarkan aksesibilitas wilayah diukur dari jaraknya ke jaringan jalan utama.",
+        },
+        banjir: {
+          judul: "Kerawanan Banjir",
+          layer: layer_peta_banjir_14,
+          deskripsi:
+            "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap bencana banjir.",
+        },
+        longsor: {
+          judul: "Kerawanan Longsor",
+          layer: layer_peta_longsor_15,
+          deskripsi:
+            "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap pergerakan tanah atau tanah longsor.",
+        },
+        ndbi: {
+          judul: "NDBI (Tutupan Lahan Terbangun)",
+          layer: layer_peta_ndbi_16,
+          deskripsi:
+            "Normalized Difference Built-up Index (NDBI) digunakan untuk memetakan luasan area perkotaan atau lahan terbangun.",
+        },
+        jk: {
+          judul: "Rasio Jenis Kelamin",
+          layer: layer_peta_jk_17,
+          deskripsi:
+            "Menunjukkan perbandingan jumlah penduduk laki-laki terhadap penduduk perempuan (Sex Ratio).",
+        },
+        pantai: {
+          judul: "Jarak ke Garis Pantai",
+          layer: layer_peta_pantai_18,
+          deskripsi:
+            "Variabel jarak absolut (dalam meter/km) dari daratan ke wilayah pesisir atau garis pantai.",
+        },
+        fwi: {
+          judul: "Fire Weather Index (FWI)",
+          layer: layer_peta_FWI_19,
+          deskripsi:
+            "Menunjukkan tingkat kerawanan cuaca terhadap kejadian kebakaran hutan dan lahan.",
+        },
+        pang: {
+          judul: "Indeks E2SFCA (Pang)",
+          layer: layer_Peta_pang_kec_23,
+          deskripsi:
+            "Peta ini menunjukkan aksesibilitas spasial layanan menggunakan metode E2SFCA (Variabel Pang).",
+        },
+        indeks: {
+          judul: "Indeks E2SFCA",
+          layer: layer_peta_indeks_20,
+          deskripsi:
+            "Peta ini menunjukkan Indeks Enhanced Two-Step Floating Catchment Area (E2SFCA).",
+        },
+        tri: {
+          judul: "Terrain Ruggedness Index (TRI)",
+          layer: layer_peta_TRI_21,
+          deskripsi:
+            "Mengukur tingkat kekasaran bentuk muka bumi atau morfologi (Ruggedness).",
+        },
+        lisa: {
+          judul: "LISA (Hotspot/Coldspot)",
+          layer: layer_LISA_22,
+          deskripsi:
+            "Peta signifikansi spasial lokal. Kategori yang tersedia: High-High, High-Low, Low-High, Low-Low, dan Not Significant.",
+        },
       };
 
-      var legendaData = {"curah_hujan":{"judul":"Curah Hujan","labels":["7.95 - 8.85","8.85 - 9.36","9.36 - 10.16","10.16 - 11.11","11.11 - 12.03"],"colors":["rgba(255,192,192,1.0)","rgba(255,144,144,1.0)","rgba(255,96,96,1.0)","rgba(255,48,48,1.0)","rgba(255,0,0,1.0)"],"categorical":false},"ndvi":{"judul":"NDVI (Normalized Difference Vegetation Index)","labels":["0.276 - 0.457","0.457 - 0.523","0.523 - 0.567","0.567 - 0.605","0.605 - 0.697"],"colors":["rgba(237,252,230,1.0)","rgba(201,234,194,1.0)","rgba(123,199,124,1.0)","rgba(42,146,75,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"windspeed":{"judul":"Kecepatan Angin","labels":["0.77 - 1.13","1.13 - 1.64","1.64 - 2.09","2.09 - 2.41","2.41 - 3.39"],"colors":["rgba(228,241,255,1.0)","rgba(200,220,240,1.0)","rgba(115,178,216,1.0)","rgba(41,121,185,1.0)","rgba(8,48,107,1.0)"],"categorical":false},"so2":{"judul":"Konsentrasi SO2","labels":["-0.000203 - -0.000065","-0.000065 - -0.000002","-0.000002 - 0.000063","0.000063 - 0.000121","0.000121 - 0.000255"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"no2":{"judul":"Konsentrasi NO2","labels":["0.0000013 - 0.000005","0.000005 - 0.0000079","0.0000079 - 0.0000095","0.0000095 - 0.0000121","0.0000121 - 0.0000187"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"o3":{"judul":"Konsentrasi Ozon (O3)","labels":["0.11595 - 0.11632","0.11632 - 0.11651","0.11651 - 0.11668","0.11668 - 0.11689","0.11689 - 0.11771"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"co":{"judul":"Konsentrasi CO","labels":["0.02153 - 0.02459","0.02459 - 0.02574","0.02574 - 0.02633","0.02633 - 0.02705","0.02705 - 0.02849"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"aod":{"judul":"Aerosol Optical Depth (AOD)","labels":["-0.157 - 0.228","0.228 - 0.243","0.243 - 0.288","0.288 - 0.334","0.334 - 0.511"],"colors":["rgba(255,225,210,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"elevasi":{"judul":"Elevasi (Ketinggian)","labels":["5 - 13.7","13.7 - 61","61 - 116.8","116.8 - 212.3","212.3 - 683"],"colors":["rgba(224,252,213,1.0)","rgba(165,234,151,1.0)","rgba(96,199,97,1.0)","rgba(42,146,75,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"slope":{"judul":"Slope (Kemiringan Lereng)","labels":["1.8 - 4","4 - 6","6 - 8","8 - 10.8","10.8 - 18.6"],"colors":["rgba(224,252,213,1.0)","rgba(165,234,151,1.0)","rgba(96,199,97,1.0)","rgba(42,146,75,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"twi":{"judul":"Topographic Wetness Index (TWI)","labels":["6.39 - 7.01","7.01 - 7.65","7.65 - 8.38","8.38 - 10.14","10.14 - 14.39"],"colors":["rgba(255,236,216,1.0)","rgba(253,210,165,1.0)","rgba(253,146,67,1.0)","rgba(223,80,5,1.0)","rgba(127,39,4,1.0)"],"categorical":false},"sungai":{"judul":"Jarak ke Sungai","labels":["281 - 557","557 - 894","894 - 1142","1142 - 1755","1755 - 4085"],"colors":["rgba(8,48,107,1.0)","rgba(41,121,185,1.0)","rgba(115,178,216,1.0)","rgba(199,220,240,1.0)","rgba(224,240,255,1.0)"],"categorical":false},"jalan":{"judul":"Jarak ke Jalan Utama","labels":["161 - 349","349 - 501","501 - 598","598 - 919","919 - 2212"],"colors":["rgba(103,0,13,1.0)","rgba(211,32,32,1.0)","rgba(251,112,80,1.0)","rgba(252,190,165,1.0)","rgba(255,245,240,1.0)"],"categorical":false},"banjir":{"judul":"Kerawanan Banjir","labels":["0 - 0.17","0.17 - 0.34","0.34 - 0.5","0.5 - 0.67","0.67 - 0.84"],"colors":["rgba(255,245,240,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"longsor":{"judul":"Kerawanan Longsor","labels":["0 - 0","0 - 1"],"colors":["rgba(255,245,240,1.0)","rgba(206,0,26,1.0)"],"categorical":false},"ndbi":{"judul":"NDBI (Tutupan Lahan Terbangun)","labels":["-0.784 - -0.5","-0.5 - -0.429","-0.429 - -0.4","-0.4 - -0.333","-0.333 - 1"],"colors":["rgba(255,245,240,1.0)","rgba(252,190,165,1.0)","rgba(251,112,80,1.0)","rgba(211,32,32,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"jk":{"judul":"Rasio Jenis Kelamin","labels":["93.2 - 96.2","96.2 - 99.3","99.3 - 102.3","102.3 - 105.3","105.3 - 108.4"],"colors":["rgba(202,0,32,1.0)","rgba(244,165,130,1.0)","rgba(247,247,247,1.0)","rgba(146,197,222,1.0)","rgba(5,113,176,1.0)"],"categorical":false},"pantai":{"judul":"Jarak ke Garis Pantai","labels":["313 - 5592","5592 - 10871","10871 - 16150","16150 - 21429","21429 - 26708"],"colors":["rgba(8,48,107,1.0)","rgba(41,121,185,1.0)","rgba(115,178,216,1.0)","rgba(200,220,240,1.0)","rgba(247,251,255,1.0)"],"categorical":false},"fwi":{"judul":"Fire Weather Index (FWI)","labels":["0.162 - 0.187","0.187 - 0.211","0.211 - 0.236"],"colors":["rgba(255,245,240,1.0)","rgba(251,112,80,1.0)","rgba(103,0,13,1.0)"],"categorical":false},"pang":{"judul":"Indeks E2SFCA (Pang)","labels":["1","2","3","4"],"colors":["rgba(51,221,65,1.0)","rgba(153,110,202,1.0)","rgba(200,188,98,1.0)","rgba(45,179,228,1.0)"],"categorical":true},"indeks":{"judul":"Indeks E2SFCA","labels":["0.0018 - 0.0028","0.0028 - 0.0038","0.0038 - 0.0048"],"colors":["rgba(247,252,245,1.0)","rgba(123,199,124,1.0)","rgba(0,68,27,1.0)"],"categorical":false},"tri":{"judul":"Terrain Ruggedness Index (TRI)","labels":["1.15 - 1.93","1.93 - 2.79","2.79 - 3.75","3.75 - 4.7","4.7 - 7.89"],"colors":["rgba(255,236,216,1.0)","rgba(253,210,165,1.0)","rgba(253,146,67,1.0)","rgba(223,80,5,1.0)","rgba(127,39,4,1.0)"],"categorical":false},"lisa":{"judul":"LISA (Hotspot/Coldspot)","labels":["High-High (Hotspot)","High-Low (Outlier)","Low-High (Outlier)","Low-Low (Coldspot)","Not Significant"],"colors":["rgba(0,255,33,1.0)","rgba(255,222,0,1.0)","rgba(216,114,36,1.0)","rgba(255,16,0,1.0)","rgba(192,184,189,1.0)"],"categorical":true},"kecamatan":{"judul":"Peta Wilayah Pangandaran","labels":["1","2","3","4"],"colors":["rgba(51,221,65,1.0)","rgba(153,110,202,1.0)","rgba(200,188,98,1.0)","rgba(45,179,228,1.0)"],"categorical":true}};;
+      var legendaData = {
+        curah_hujan: {
+          judul: "Curah Hujan",
+          labels: [
+            "7.95 - 8.85",
+            "8.85 - 9.36",
+            "9.36 - 10.16",
+            "10.16 - 11.11",
+            "11.11 - 12.03",
+          ],
+          colors: [
+            "rgba(255,192,192,1.0)",
+            "rgba(255,144,144,1.0)",
+            "rgba(255,96,96,1.0)",
+            "rgba(255,48,48,1.0)",
+            "rgba(255,0,0,1.0)",
+          ],
+          categorical: false,
+        },
+        ndvi: {
+          judul: "NDVI (Normalized Difference Vegetation Index)",
+          labels: [
+            "0.276 - 0.457",
+            "0.457 - 0.523",
+            "0.523 - 0.567",
+            "0.567 - 0.605",
+            "0.605 - 0.697",
+          ],
+          colors: [
+            "rgba(237,252,230,1.0)",
+            "rgba(201,234,194,1.0)",
+            "rgba(123,199,124,1.0)",
+            "rgba(42,146,75,1.0)",
+            "rgba(0,68,27,1.0)",
+          ],
+          categorical: false,
+        },
+        windspeed: {
+          judul: "Kecepatan Angin",
+          labels: [
+            "0.77 - 1.13",
+            "1.13 - 1.64",
+            "1.64 - 2.09",
+            "2.09 - 2.41",
+            "2.41 - 3.39",
+          ],
+          colors: [
+            "rgba(228,241,255,1.0)",
+            "rgba(200,220,240,1.0)",
+            "rgba(115,178,216,1.0)",
+            "rgba(41,121,185,1.0)",
+            "rgba(8,48,107,1.0)",
+          ],
+          categorical: false,
+        },
+        so2: {
+          judul: "Konsentrasi SO2",
+          labels: [
+            "-0.000203 - -0.000065",
+            "-0.000065 - -0.000002",
+            "-0.000002 - 0.000063",
+            "0.000063 - 0.000121",
+            "0.000121 - 0.000255",
+          ],
+          colors: [
+            "rgba(255,225,210,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        no2: {
+          judul: "Konsentrasi NO2",
+          labels: [
+            "0.0000013 - 0.000005",
+            "0.000005 - 0.0000079",
+            "0.0000079 - 0.0000095",
+            "0.0000095 - 0.0000121",
+            "0.0000121 - 0.0000187",
+          ],
+          colors: [
+            "rgba(255,225,210,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        o3: {
+          judul: "Konsentrasi Ozon (O3)",
+          labels: [
+            "0.11595 - 0.11632",
+            "0.11632 - 0.11651",
+            "0.11651 - 0.11668",
+            "0.11668 - 0.11689",
+            "0.11689 - 0.11771",
+          ],
+          colors: [
+            "rgba(255,225,210,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        co: {
+          judul: "Konsentrasi CO",
+          labels: [
+            "0.02153 - 0.02459",
+            "0.02459 - 0.02574",
+            "0.02574 - 0.02633",
+            "0.02633 - 0.02705",
+            "0.02705 - 0.02849",
+          ],
+          colors: [
+            "rgba(255,225,210,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        aod: {
+          judul: "Aerosol Optical Depth (AOD)",
+          labels: [
+            "-0.157 - 0.228",
+            "0.228 - 0.243",
+            "0.243 - 0.288",
+            "0.288 - 0.334",
+            "0.334 - 0.511",
+          ],
+          colors: [
+            "rgba(255,225,210,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        elevasi: {
+          judul: "Elevasi (Ketinggian)",
+          labels: [
+            "5 - 13.7",
+            "13.7 - 61",
+            "61 - 116.8",
+            "116.8 - 212.3",
+            "212.3 - 683",
+          ],
+          colors: [
+            "rgba(224,252,213,1.0)",
+            "rgba(165,234,151,1.0)",
+            "rgba(96,199,97,1.0)",
+            "rgba(42,146,75,1.0)",
+            "rgba(0,68,27,1.0)",
+          ],
+          categorical: false,
+        },
+        slope: {
+          judul: "Slope (Kemiringan Lereng)",
+          labels: ["1.8 - 4", "4 - 6", "6 - 8", "8 - 10.8", "10.8 - 18.6"],
+          colors: [
+            "rgba(224,252,213,1.0)",
+            "rgba(165,234,151,1.0)",
+            "rgba(96,199,97,1.0)",
+            "rgba(42,146,75,1.0)",
+            "rgba(0,68,27,1.0)",
+          ],
+          categorical: false,
+        },
+        twi: {
+          judul: "Topographic Wetness Index (TWI)",
+          labels: [
+            "6.39 - 7.01",
+            "7.01 - 7.65",
+            "7.65 - 8.38",
+            "8.38 - 10.14",
+            "10.14 - 14.39",
+          ],
+          colors: [
+            "rgba(255,236,216,1.0)",
+            "rgba(253,210,165,1.0)",
+            "rgba(253,146,67,1.0)",
+            "rgba(223,80,5,1.0)",
+            "rgba(127,39,4,1.0)",
+          ],
+          categorical: false,
+        },
+        sungai: {
+          judul: "Jarak ke Sungai",
+          labels: [
+            "281 - 557",
+            "557 - 894",
+            "894 - 1142",
+            "1142 - 1755",
+            "1755 - 4085",
+          ],
+          colors: [
+            "rgba(8,48,107,1.0)",
+            "rgba(41,121,185,1.0)",
+            "rgba(115,178,216,1.0)",
+            "rgba(199,220,240,1.0)",
+            "rgba(224,240,255,1.0)",
+          ],
+          categorical: false,
+        },
+        jalan: {
+          judul: "Jarak ke Jalan Utama",
+          labels: [
+            "161 - 349",
+            "349 - 501",
+            "501 - 598",
+            "598 - 919",
+            "919 - 2212",
+          ],
+          colors: [
+            "rgba(103,0,13,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(255,245,240,1.0)",
+          ],
+          categorical: false,
+        },
+        banjir: {
+          judul: "Kerawanan Banjir",
+          labels: [
+            "0 - 0.17",
+            "0.17 - 0.34",
+            "0.34 - 0.5",
+            "0.5 - 0.67",
+            "0.67 - 0.84",
+          ],
+          colors: [
+            "rgba(255,245,240,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        longsor: {
+          judul: "Kerawanan Longsor",
+          labels: ["0 - 0", "0 - 1"],
+          colors: ["rgba(255,245,240,1.0)", "rgba(206,0,26,1.0)"],
+          categorical: false,
+        },
+        ndbi: {
+          judul: "NDBI (Tutupan Lahan Terbangun)",
+          labels: [
+            "-0.784 - -0.5",
+            "-0.5 - -0.429",
+            "-0.429 - -0.4",
+            "-0.4 - -0.333",
+            "-0.333 - 1",
+          ],
+          colors: [
+            "rgba(255,245,240,1.0)",
+            "rgba(252,190,165,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(211,32,32,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        jk: {
+          judul: "Rasio Jenis Kelamin",
+          labels: [
+            "93.2 - 96.2",
+            "96.2 - 99.3",
+            "99.3 - 102.3",
+            "102.3 - 105.3",
+            "105.3 - 108.4",
+          ],
+          colors: [
+            "rgba(202,0,32,1.0)",
+            "rgba(244,165,130,1.0)",
+            "rgba(247,247,247,1.0)",
+            "rgba(146,197,222,1.0)",
+            "rgba(5,113,176,1.0)",
+          ],
+          categorical: false,
+        },
+        pantai: {
+          judul: "Jarak ke Garis Pantai",
+          labels: [
+            "313 - 5592",
+            "5592 - 10871",
+            "10871 - 16150",
+            "16150 - 21429",
+            "21429 - 26708",
+          ],
+          colors: [
+            "rgba(8,48,107,1.0)",
+            "rgba(41,121,185,1.0)",
+            "rgba(115,178,216,1.0)",
+            "rgba(200,220,240,1.0)",
+            "rgba(247,251,255,1.0)",
+          ],
+          categorical: false,
+        },
+        fwi: {
+          judul: "Fire Weather Index (FWI)",
+          labels: ["0.162 - 0.187", "0.187 - 0.211", "0.211 - 0.236"],
+          colors: [
+            "rgba(255,245,240,1.0)",
+            "rgba(251,112,80,1.0)",
+            "rgba(103,0,13,1.0)",
+          ],
+          categorical: false,
+        },
+        pang: {
+          judul: "Indeks E2SFCA (Pang)",
+          labels: ["1", "2", "3", "4"],
+          colors: [
+            "rgba(51,221,65,1.0)",
+            "rgba(153,110,202,1.0)",
+            "rgba(200,188,98,1.0)",
+            "rgba(45,179,228,1.0)",
+          ],
+          categorical: true,
+        },
+        indeks: {
+          judul: "Indeks E2SFCA",
+          labels: ["0.0018 - 0.0028", "0.0028 - 0.0038", "0.0038 - 0.0048"],
+          colors: [
+            "rgba(247,252,245,1.0)",
+            "rgba(123,199,124,1.0)",
+            "rgba(0,68,27,1.0)",
+          ],
+          categorical: false,
+        },
+        tri: {
+          judul: "Terrain Ruggedness Index (TRI)",
+          labels: [
+            "1.15 - 1.93",
+            "1.93 - 2.79",
+            "2.79 - 3.75",
+            "3.75 - 4.7",
+            "4.7 - 7.89",
+          ],
+          colors: [
+            "rgba(255,236,216,1.0)",
+            "rgba(253,210,165,1.0)",
+            "rgba(253,146,67,1.0)",
+            "rgba(223,80,5,1.0)",
+            "rgba(127,39,4,1.0)",
+          ],
+          categorical: false,
+        },
+        lisa: {
+          judul: "LISA (Hotspot/Coldspot)",
+          labels: [
+            "High-High (Hotspot)",
+            "High-Low (Outlier)",
+            "Low-High (Outlier)",
+            "Low-Low (Coldspot)",
+            "Not Significant",
+          ],
+          colors: [
+            "rgba(0,255,33,1.0)",
+            "rgba(255,222,0,1.0)",
+            "rgba(216,114,36,1.0)",
+            "rgba(255,16,0,1.0)",
+            "rgba(192,184,189,1.0)",
+          ],
+          categorical: true,
+        },
+        kecamatan: {
+          judul: "Peta Wilayah Pangandaran",
+          labels: ["1", "2", "3", "4"],
+          colors: [
+            "rgba(51,221,65,1.0)",
+            "rgba(153,110,202,1.0)",
+            "rgba(200,188,98,1.0)",
+            "rgba(45,179,228,1.0)",
+          ],
+          categorical: true,
+        },
+      };
 
       var semuaLayerPeta = [];
       for (var namaPeta in petaData) {
-        if (petaData[namaPeta] && petaData[namaPeta].layer && semuaLayerPeta.indexOf(petaData[namaPeta].layer) === -1) {
+        if (
+          petaData[namaPeta] &&
+          petaData[namaPeta].layer &&
+          semuaLayerPeta.indexOf(petaData[namaPeta].layer) === -1
+        ) {
           semuaLayerPeta.push(petaData[namaPeta].layer);
         }
       }
@@ -4522,7 +5589,12 @@
       var hasilMapArea = document.getElementById("hasil-map-area");
 
       function escapeHtml(value) {
-        return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
       }
 
       function tampilkanLegenda(idPilihan) {
@@ -4532,11 +5604,19 @@
           legendaPeta.innerHTML = "";
           return;
         }
-        var htmlLegenda = '<div class="legenda-judul">' + escapeHtml(info.judul || "Legenda") + "</div>";
+        var htmlLegenda =
+          '<div class="legenda-judul">' +
+          escapeHtml(info.judul || "Legenda") +
+          "</div>";
         if (info.categorical) {
           htmlLegenda += '<div class="legenda-kategori">';
           for (var i = 0; i < info.labels.length; i++) {
-            htmlLegenda += '<div class="legenda-item"><span class="legenda-warna" style="background:' + info.colors[i] + ';"></span><span>' + escapeHtml(info.labels[i]) + '</span></div>';
+            htmlLegenda +=
+              '<div class="legenda-item"><span class="legenda-warna" style="background:' +
+              info.colors[i] +
+              ';"></span><span>' +
+              escapeHtml(info.labels[i]) +
+              "</span></div>";
           }
           htmlLegenda += "</div>";
         } else {
@@ -4548,17 +5628,27 @@
             stops.push(info.colors[j] + " " + p0 + "%");
             stops.push(info.colors[j] + " " + p1 + "%");
           }
-          htmlLegenda += '<div class="legenda-gradient" style="background:linear-gradient(to right,' + stops.join(",") + ');"></div>';
+          htmlLegenda +=
+            '<div class="legenda-gradient" style="background:linear-gradient(to right,' +
+            stops.join(",") +
+            ');"></div>';
           var minValue = info.labels[0].split(" - ")[0];
-          var maxValue = info.labels[info.labels.length - 1].split(" - ")[1] || info.labels[info.labels.length - 1];
-          htmlLegenda += '<div class="legenda-nilai"><span>' + escapeHtml(minValue) + '</span><span>' + escapeHtml(maxValue) + '</span></div>';
+          var maxValue =
+            info.labels[info.labels.length - 1].split(" - ")[1] ||
+            info.labels[info.labels.length - 1];
+          htmlLegenda +=
+            '<div class="legenda-nilai"><span>' +
+            escapeHtml(minValue) +
+            "</span><span>" +
+            escapeHtml(maxValue) +
+            "</span></div>";
         }
         legendaPeta.innerHTML = htmlLegenda;
         legendaPeta.style.display = "block";
       }
 
       function matikanSemuaLayer() {
-        semuaLayerPeta.forEach(function(layer) {
+        semuaLayerPeta.forEach(function (layer) {
           if (map.hasLayer(layer)) map.removeLayer(layer);
         });
       }
@@ -4568,7 +5658,8 @@
         var data = petaData[idPilihan];
         if (!data || !data.layer) {
           judulPanel.textContent = "Pilih Variabel";
-          teksPanel.textContent = "Pilih variabel untuk menampilkan peta dan deskripsinya.";
+          teksPanel.textContent =
+            "Pilih variabel untuk menampilkan peta dan deskripsinya.";
           legendaPeta.style.display = "none";
           return;
         }
@@ -4576,42 +5667,78 @@
         judulPanel.textContent = data.judul;
         teksPanel.textContent = deskripsiOverride || data.deskripsi;
         tampilkanLegenda(idPilihan);
-        setTimeout(function() {
+        setTimeout(function () {
           map.invalidateSize();
           try {
             var bounds = data.layer.getBounds();
-            if (bounds && bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 12 });
+            if (bounds && bounds.isValid())
+              map.fitBounds(bounds, { padding: [20, 20], maxZoom: 12 });
           } catch (err) {}
         }, 120);
       }
 
       function pindahkanMapKe(area) {
         if (area && mapEl.parentNode !== area) area.appendChild(mapEl);
-        setTimeout(function() { map.invalidateSize(); }, 80);
+        setTimeout(function () {
+          map.invalidateSize();
+        }, 80);
       }
 
       function tampilkanSection(id) {
-        document.querySelectorAll(".dashboard-section").forEach(function(section) {
-          section.classList.toggle("active", section.id === "section-" + id);
+        document
+          .querySelectorAll(".dashboard-section")
+          .forEach(function (section) {
+            section.classList.toggle("active", section.id === "section-" + id);
+          });
+
+        document.querySelectorAll(".dashboard-menu").forEach(function (button) {
+          button.classList.toggle(
+            "active",
+            button.getAttribute("data-section") === id,
+          );
         });
-        document.querySelectorAll(".dashboard-menu").forEach(function(button) {
-          button.classList.toggle("active", button.getAttribute("data-section") === id);
-        });
+
         if (id === "variabel") {
+          // Pindahkan peta kembali ke menu Variabel
           pindahkanMapKe(document.getElementById("map-area"));
+
+          // Tampilkan kembali variabel yang sedang dipilih
+          var variabelTerpilih = menuDropdown.value;
+
+          if (variabelTerpilih && petaData[variabelTerpilih]) {
+            tampilkanPeta(variabelTerpilih);
+          } else {
+            // Jika belum pernah memilih variabel,
+            // kosongkan peta dan tampilkan pesan awal
+            matikanSemuaLayer();
+            legendaPeta.style.display = "none";
+            judulPanel.textContent = "Pilih Variabel";
+            teksPanel.textContent =
+              "Pilih variabel pada dropdown untuk menampilkan peta, legenda, dan deskripsi variabel.";
+          }
         } else if (id === "hasil") {
+          // Pindahkan peta ke menu Hasil Analisis
           pindahkanMapKe(hasilMapArea);
+
+          // Otomatis tampilkan E2SFCA
           tampilkanHasil("e2sfca");
         }
-        setTimeout(function() { map.invalidateSize(); }, 150);
+
+        setTimeout(function () {
+          map.invalidateSize();
+        }, 150);
+
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       function tampilkanHasil(mode) {
-        document.querySelectorAll(".result-tab").forEach(function(tab) {
-          tab.classList.toggle("active", tab.getAttribute("data-result") === mode);
+        document.querySelectorAll(".result-tab").forEach(function (tab) {
+          tab.classList.toggle(
+            "active",
+            tab.getAttribute("data-result") === mode,
+          );
         });
-        document.querySelectorAll(".result-pane").forEach(function(pane) {
+        document.querySelectorAll(".result-pane").forEach(function (pane) {
           pane.classList.toggle("active", pane.id === "result-" + mode);
         });
 
@@ -4621,29 +5748,35 @@
         } else {
           tampilkanPeta("lisa", petaData.lisa.deskripsi);
         }
-        setTimeout(function() { map.invalidateSize(); }, 120);
+        setTimeout(function () {
+          map.invalidateSize();
+        }, 120);
       }
 
-      document.querySelectorAll(".dashboard-menu").forEach(function(button) {
-        button.addEventListener("click", function() {
+      document.querySelectorAll(".dashboard-menu").forEach(function (button) {
+        button.addEventListener("click", function () {
           tampilkanSection(this.getAttribute("data-section"));
         });
       });
 
-      menuDropdown.addEventListener("change", function() {
+      menuDropdown.addEventListener("change", function () {
         tampilkanPeta(this.value);
       });
 
       if (hasilDropdown) {
-        hasilDropdown.addEventListener("change", function() {
-          if (document.getElementById("section-hasil").classList.contains("active")) {
+        hasilDropdown.addEventListener("change", function () {
+          if (
+            document
+              .getElementById("section-hasil")
+              .classList.contains("active")
+          ) {
             tampilkanPeta(this.value);
           }
         });
       }
 
-      document.querySelectorAll(".result-tab").forEach(function(tab) {
-        tab.addEventListener("click", function() {
+      document.querySelectorAll(".result-tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
           tampilkanHasil(this.getAttribute("data-result"));
         });
       });
@@ -4652,7 +5785,9 @@
       // Hanya layer hasil/variabel yang dipilih yang akan ditambahkan ke peta.
       matikanSemuaLayer();
       setBounds();
-      setTimeout(function() { map.invalidateSize(); }, 250);
+      setTimeout(function () {
+        map.invalidateSize();
+      }, 250);
     </script>
   </body>
 </html>
