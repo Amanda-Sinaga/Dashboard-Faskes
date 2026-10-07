@@ -457,6 +457,20 @@
         margin-top: 8px;
       }
 
+      #rekomendasi-map-area {
+        margin-top: 16px;
+      }
+
+      #rekomendasi-map-area #map {
+        margin-bottom: 16px;
+      }
+      #rekomendasi-map-info {
+        margin-top: 16px;
+      }
+      .hasil-keterangan {
+        width: 100%;
+      }
+
       @media (max-width: 800px) {
         .dashboard-container {
           width: 94%;
@@ -524,6 +538,115 @@
           margin: 5px 0;
         }
       }
+
+      /* =====================================================
+   KHUSUS BAGIAN METODE PERHITUNGAN E2SFCA
+   Tidak memengaruhi bagian dashboard lainnya
+   ===================================================== */
+
+      .metode-e2sfca {
+        padding: 22px;
+      }
+
+      .metode-e2sfca > h3 {
+        margin-bottom: 10px;
+      }
+
+      .metode-e2sfca .metode-pengantar {
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
+
+      /* Kotak setiap langkah */
+      .metode-e2sfca .formula-box {
+        background: #f8fafc;
+        border: 1px solid #dbe2ea;
+        border-radius: 14px;
+        padding: 22px;
+        margin: 16px 0;
+        box-sizing: border-box;
+      }
+
+      /* Judul Langkah 1 dan 2 */
+      .metode-e2sfca .formula-box h4 {
+        margin: 0 0 20px;
+        font-size: 20px;
+        line-height: 1.4;
+      }
+
+      /* Kotak putih untuk rumus */
+      .metode-e2sfca .formula {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        min-height: 92px;
+        box-sizing: border-box;
+
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+
+        padding: 18px;
+        margin-bottom: 18px;
+
+        text-align: center;
+        font-family: "Times New Roman", serif;
+        font-size: 28px;
+        line-height: 1.3;
+      }
+
+      /* Penjelasan rumus */
+      .metode-e2sfca .formula-description {
+        margin: 0;
+        line-height: 1.7;
+      }
+
+      /* Pecahan pada rumus Rj */
+      .metode-e2sfca .sum-fraction {
+        display: inline-flex;
+        flex-direction: column;
+        vertical-align: middle;
+        line-height: 1.1;
+        margin: 0 5px;
+      }
+
+      .metode-e2sfca .sum-fraction .top {
+        border-bottom: 1px solid #222;
+        padding: 0 7px 3px;
+      }
+
+      .metode-e2sfca .sum-fraction .bottom {
+        padding: 3px 7px 0;
+      }
+
+      /* Alur E2SFCA */
+      .metode-e2sfca .workflow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        margin-top: 24px;
+      }
+
+      .metode-e2sfca .workflow div {
+        background: #eef6f5;
+        border: 1px solid #c9e5e0;
+        border-radius: 9px;
+
+        padding: 10px 14px;
+
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .metode-e2sfca .workflow span {
+        font-size: 22px;
+        line-height: 1;
+      }
     </style>
     <title>Dashboard E2SFCA &amp; LISA</title>
   </head>
@@ -549,6 +672,13 @@
           <button type="button" class="dashboard-menu" data-section="hasil">
             Hasil Analisis
           </button>
+          <button
+            type="button"
+            class="dashboard-menu"
+            data-section="rekomendasi"
+          >
+            Rekomendasi
+          </button>
         </nav>
       </header>
 
@@ -558,123 +688,29 @@
              ===================================================== -->
         <section id="section-pendahuluan" class="dashboard-section active">
           <div class="hero-card">
-            <h2>
-              Urgensi Tata Ruang dan Misi Keadilan Akses Kesehatan Kabupaten
-              Pangandaran
-            </h2>
+            <h2>Pendahuluan</h2>
             <p class="section-lead" style="text-align: justify">
-              Pemerataan pelayanan medis merupakan hak mendasar bagi setiap
-              warga, namun Kabupaten Pangandaran masih dihadapkan pada tantangan
-              besar berupa ketimpangan distribusi sumber daya yang tajam. Saat
-              ini, alokasi tenaga kesehatan jaminan publik menumpuk ekstrem di
-              perkotaan pesisir selatan karena menjadi basis operasional rumah
-              sakit rujukan utama, sementara mayoritas desa pedalaman mencatat
-              kelangkaan kritis hingga nol nakes aktual. Kondisi asimetris ini
-              memaksa masyarakat pelosok melakukan mobilitas pengobatan lintas
-              batas yang melelahkan, padahal laju ambulans gawat darurat di
-              sektor utara dihambat secara mekanis oleh topografi perbukitan
-              pegunungan yang terjal, lereng curam, serta ancaman musiman
-              seperti tanah longsor dan banjir yang periodik melumpuhkan
-              jaringan jalan utama. Karena indikator rasio per kapita
-              konvensional selama ini abai terhadap peluruhan jarak dan gagal
-              mendeteksi titik buta (blind-spot) pelayanan, penelitian dalam
-              dashboard ini hadir untuk mengintegrasikan pangkalan SatuSehat
-              Kemenkes, data BPS, dan citra satelit multi-sensor menggunakan
-              kerangka sains data. Melalui fusi data skala besar tersebut, riset
-              ini bertujuan utama menghitung Indeks Aksesibilitas Komposit di 93
-              desa berdasarkan batas waktu emas rujukan pemerintah, yaitu
-              maksimal 60 menit ke Puskesmas primer dan 120 menit ke rumah sakit
-              rujukan lanjutan. Selanjutnya, sistem mengoperasikan algoritma
-              pemelajaran mesin Random Forest Regression untuk membongkar secara
-              objektif apakah elemen penutup lahan alami atau justru koridor
-              infrastruktur jalan yang paling sensitif mendikte kelayakan
-              jangkauan medis. Seluruh rangkaian analisis ini dikunci dengan
-              dekomposisi statistik lokal LISA untuk melokalisasi koordinat
-              kantong wilayah terisolasi sejati, menguji secara matematis apakah
-              ledakan populasi kota memicu kemacetan antrean (congestion
-              effect), serta merumuskan cetak biru lokasi intervensi pembangunan
-              faskes baru berstandar Kelas Rawat Inap Standar (KRIS) demi
-              mewujudkan keadilan tata ruang kesehatan daerah yang inklusif.
+              Kabupaten Pangandaran menghadapi tantangan ketimpangan distribusi
+              fasilitas dan tenaga kesehatan jaminan pemerintah yang berpusat di
+              kawasan perkotaan pesisir selatan, sehingga memicu keterbatasan
+              akses medis di wilayah pedalaman utara serta adanya faktor
+              geografis berupa topografi serta faktor fisik alami yang
+              memengaruhi jangkauan ambulans rujukan. Dashboard ini
+              mengintegrasikan data koordinat faskes jaminan publik, alokasi
+              nakes, data penduduk BPS, dan citra satelit lingkungan menggunakan
+              metode Multi-Tier Enhanced Two-Step Floating Catchment Area
+              (E2SFCA) berbasis kurva peluruhan jarak Gaussian. Sistem ini
+              menyajikan visualisasi indeks aksesibilitas rujukan berjenjang
+              serta pemetaan klaster desa Coldspot secara objektif sebagai dasar
+              perencanaan pembangunan fasilitas kesehatan.
             </p>
             <div class="info-grid">
-              <!-- <div class="info-card">
-                <strong
-                  >Urgensi Tata Ruang dan Misi Keadilan Akses Kesehatan
-                  Kabupaten Pangandaran</strong
-                >
-                <span
-                  >Pemerataan pelayanan medis merupakan hak mendasar bagi setiap
-                  warga, namun Kabupaten Pangandaran masih dihadapkan pada
-                  tantangan besar berupa ketimpangan distribusi sumber daya yang
-                  tajam. Saat ini, alokasi tenaga kesehatan jaminan publik
-                  menumpuk ekstrem di perkotaan pesisir selatan karena menjadi
-                  basis operasional rumah sakit rujukan utama, sementara
-                  mayoritas desa pedalaman mencatat kelangkaan kritis hingga nol
-                  nakes aktual. Kondisi asimetris ini memaksa masyarakat pelosok
-                  melakukan mobilitas pengobatan lintas batas yang melelahkan,
-                  padahal laju ambulans gawat darurat di sektor utara dihambat
-                  secara mekanis oleh topografi perbukitan pegunungan yang
-                  terjal, lereng curam, serta ancaman musiman seperti tanah
-                  longsor dan banjir yang periodik melumpuhkan jaringan jalan
-                  utama. Karena indikator rasio per kapita konvensional selama
-                  ini abai terhadap peluruhan jarak dan gagal mendeteksi titik
-                  buta (blind-spot) pelayanan, penelitian dalam dashboard ini
-                  hadir untuk mengintegrasikan pangkalan SatuSehat Kemenkes,
-                  data BPS, dan citra satelit multi-sensor menggunakan kerangka
-                  sains data. Melalui fusi data skala besar tersebut, riset ini
-                  bertujuan utama menghitung Indeks Aksesibilitas Komposit di 93
-                  desa berdasarkan batas waktu emas rujukan pemerintah, yaitu
-                  maksimal 60 menit ke Puskesmas primer dan 120 menit ke rumah
-                  sakit rujukan lanjutan. Selanjutnya, sistem mengoperasikan
-                  algoritma pemelajaran mesin Random Forest Regression untuk
-                  membongkar secara objektif apakah elemen penutup lahan alami
-                  atau justru koridor infrastruktur jalan yang paling sensitif
-                  mendikte kelayakan jangkauan medis. Seluruh rangkaian analisis
-                  ini dikunci dengan dekomposisi statistik lokal LISA untuk
-                  melokalisasi koordinat kantong wilayah terisolasi sejati,
-                  menguji secara matematis apakah ledakan populasi kota memicu
-                  kemacetan antrean (congestion effect), serta merumuskan cetak
-                  biru lokasi intervensi pembangunan faskes baru berstandar
-                  Kelas Rawat Inap Standar (KRIS) demi mewujudkan keadilan tata
-                  ruang kesehatan daerah yang inklusif.</span
-                >
-              </div> -->
-              <!-- <div class="info-card">
-                <strong>Tujuan</strong>
-                <span
-                  >Melalui integrasi big data spasial lintas sektoral ini, misi
-                  utama penelitian yang dijalankan adalah membangun sebuah model
-                  pintar yang mampu mengukur nilai kelayakan akses layanan
-                  kesehatan di seluruh penjuru Pangandaran secara adil dan
-                  transparan guna mendukung lahirnya kebijakan daerah berbasis
-                  bukti (evidence-based policy). Komputasi pertama dilakukan
-                  dengan menghitung Indeks Aksesibilitas Komposit di tingkat
-                  tapak desa menggunakan algoritma matematika tingkat lanjut
-                  yang diselaraskan dengan batas waktu emas rujukan medis darat
-                  pemerintah, yaitu maksimal 60 menit untuk mencapai Puskesmas
-                  primer dan 120 menit menuju rumah sakit rujukan lanjutan.
-                  Selanjutnya, sistem mengoperasikan algoritma pemelajaran mesin
-                  Random Forest untuk membedah jalinan hubungan yang rumit
-                  antara akses kesehatan terhadap interaksi kondisi lingkungan
-                  fisik, curah hujan, hingga paparan emisi polutan udara guna
-                  mendeteksi secara objektif peringkat faktor penentu mana yang
-                  paling sensitif mengunci keterisolasian warga lokal. Seluruh
-                  rangkaian analisis ini dikunci dengan memetakan ketergantungan
-                  ruang lewat peta klaster autokorelasi lokal guna melokalisasi
-                  koordinat kantong-kantong desa yang kritis, menguji apakah
-                  meledaknya populasi kota benar-benar memicu kelumpuhan antrean
-                  pelayanan di puskesmas, serta merumuskan cetak biru
-                  pembangunan fisik fasilitas kesehatan baru yang inklusif tepat
-                  pada konsentrasi rumah berpenghuni riil masyarakat.</span
-                >
-              </div> -->
               <div class="info-card">
-                <strong>Wilayah Kajian</strong>
-
+                <strong><h2>Wilayah Kajian</h2></strong>
                 <ol>
                   <li>
                     <strong>Cakupan Administratif:</strong>
-                    Seluruh yurisdiksi administratif Kabupaten Pangandaran,
+                    seluruh wilayah administratif Kabupaten Pangandaran,
                     Provinsi Jawa Barat.
                   </li>
 
@@ -687,309 +723,243 @@
 
                   <li>
                     <strong>Karakteristik Fisik Wilayah:</strong>
-                    Wilayah ini memiliki asimetri rona lingkungan yang tajam,
-                    sektor utara didominasi topografi perbukitan terjal
-                    pegunungan rawan longsor, sedangkan sektor selatan merupakan
-                    koridor dataran rendah pesisir pantai Samudra Hindia.
+                    sektor utara didominasi topografi perbukitan dan pegunungan,
+                    sedangkan sektor selatan merupakan koridor dataran rendah
+                    pesisir Samudra Hindia.
                   </li>
                 </ol>
               </div>
             </div>
+            <p></p>
+            <div class="info-card">
+              <strong><h2>Regulasi</h2></strong>
+              <ol>
+                <li>
+                  <strong>UU No. 17 Tahun 2023:</strong>
+                  Transformasi sistem kesehatan nasional terpadu.
+                </li>
+                <li>
+                  <strong>PP No. 28 Tahun 2024</strong>
+                  Pemerataan hak pelayanan publik daerah.
+                </li>
+                <li>
+                  <strong>Permenkes No. 19 Tahun 2024</strong>
+                  Penyelenggaraan Pusat Kesehatan Masyarakat.
+                </li>
+                <li>
+                  <strong>Permenkes No. 16 Tahun 2024</strong>
+                  Penghapusan sekat yurisdiksi administratif kaku.
+                </li>
+                <li>
+                  <strong>PerPres No. 59 Tahun 2024</strong>
+                  Penghapusan sekat yurisdiksi administratif kaku.
+                </li>
+              </ol>
+            </div>
           </div>
 
           <div class="content-card">
-            <h2>Data yang Digunakan</h2>
-            <p>
-              Penelitian ini menerapkan metode fusi data skala besar
-              (large-scale data fusion) yang memadukan pangkalan data tabular
-              resmi dengan 20 variabel prediktor spasial raster beresolusi
-              seragam metrik 30 Meter:
+            <h3>Data yang Digunakan</h3>
+            <p class="section-lead" style="text-align: justify">
+              Integrasi data multisumber
             </p>
             <div class="data-table-wrap">
               <table class="data-table">
                 <thead>
                   <tr>
                     <th>Kelompok</th>
-                    <th>Data/Variabel</th>
+                    <th>Nama Variabel</th>
                     <th>Keterangan</th>
+                    <th>Sumber Data</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Lingkungan -->
                   <tr>
                     <td rowspan="3"><strong>Lingkungan</strong></td>
-                    <td><strong>Curah Hujan</strong></td>
+                    <td>Curah Hujan</td>
                     <td>
-                      Total air hujan yang turun (untuk melihat hambatan cuaca).
+                      Total air hujan yang turun untuk melihat hambatan cuaca.
                     </td>
-                    <td>Satelit CHIRPS (UC Santa Barbara)</td>
+                    <td>CHIRPS</td>
                   </tr>
-
                   <tr>
-                    <td><strong>NDVI (Kehijauan)</strong></td>
-                    <td>
-                      Tingkat kerapatan atau lebatnya tanaman dan hutan di desa.
-                    </td>
-                    <td>Satelit Landsat 8 (USGS/NASA)</td>
+                    <td>NDVI</td>
+                    <td>Tingkat kehijauan atau kerapatan vegetasi.</td>
+                    <td>Landsat 8 (USGS/NASA)</td>
                   </tr>
-
                   <tr>
-                    <td><strong>Kecepatan Angin</strong></td>
-                    <td>
-                      Kecepatan tiupan angin di sekitar permukaan tanah desa.
-                    </td>
-                    <td>Satelit ECMWF ERA5-Land Eropa</td>
+                    <td>Kecepatan Angin</td>
+                    <td>Kecepatan tiupan angin di sekitar permukaan tanah.</td>
+                    <td>ECMWF ERA5-Land</td>
                   </tr>
-
-                  <!-- Kualitas Udara -->
                   <tr>
                     <td rowspan="5"><strong>Kualitas Udara</strong></td>
-                    <td><strong>SO₂ (Sulfur Dioksida)</strong></td>
-                    <td>
-                      Polusi gas akibat aktivitas industri atau asap kendaraan.
-                    </td>
-                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                    <td>SO₂</td>
+                    <td>Indikator polusi sulfur dioksida.</td>
+                    <td>Sentinel-5P (ESA)</td>
                   </tr>
-
                   <tr>
-                    <td><strong>NO₂ (Nitrogen Dioksida)</strong></td>
-                    <td>
-                      Polusi gas yang biasa dihasilkan dari pembakaran mesin
-                      kendaraan.
-                    </td>
-                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                    <td>NO₂</td>
+                    <td>Indikator polusi nitrogen dioksida.</td>
+                    <td>Sentinel-5P (ESA)</td>
                   </tr>
-
                   <tr>
-                    <td><strong>O₃ (Ozon)</strong></td>
-                    <td>
-                      Lapisan gas di udara yang memengaruhi kondisi pernapasan.
-                    </td>
-                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                    <td>O₃</td>
+                    <td>Kandungan ozon di udara.</td>
+                    <td>Sentinel-5P (ESA)</td>
                   </tr>
-
                   <tr>
-                    <td><strong>CO (Karbon Monoksida)</strong></td>
-                    <td>
-                      Gas beracun tak berwarna hasil dari sisa pembakaran
-                      kendaraan.
-                    </td>
-                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                    <td>CO</td>
+                    <td>Indikator karbon monoksida hasil pembakaran.</td>
+                    <td>Sentinel-5P (ESA)</td>
                   </tr>
-
                   <tr>
-                    <td><strong>AOD (Kekeruhan Udara)</strong></td>
-                    <td>
-                      Tingkat kepekatan debu atau asap yang melayang di udara.
-                    </td>
-                    <td>Satelit Sentinel-5P (ESA Eropa)</td>
+                    <td>AOD</td>
+                    <td>Indikator kepekatan aerosol/debu/asap.</td>
+                    <td>MODIS (NASA)</td>
                   </tr>
-
-                  <!-- Topografi -->
                   <tr>
                     <td rowspan="4"><strong>Topografi</strong></td>
-                    <td><strong>Elevasi (Ketinggian)</strong></td>
-                    <td>
-                      Tinggi rendahnya daratan desa dari permukaan air laut.
-                    </td>
-                    <td>Badan Informasi Geospasial (DEMNAS BIG)</td>
+                    <td>Elevasi</td>
+                    <td>Ketinggian daratan dari permukaan laut.</td>
+                    <td>DEMNAS BIG</td>
                   </tr>
-
                   <tr>
-                    <td><strong>Slope (Kemiringan)</strong></td>
-                    <td>
-                      Tingkat kecuraman tanjakan atau turunan tanah di desa.
-                    </td>
-                    <td>Hasil Olah Data DEMNAS BIG</td>
+                    <td>Slope</td>
+                    <td>Tingkat kemiringan permukaan tanah.</td>
+                    <td>Olahan DEMNAS BIG</td>
                   </tr>
-
                   <tr>
-                    <td><strong>TRI (Kekasaran Medan)</strong></td>
-                    <td>
-                      Tingkat ketidakrataan atau kasarnya permukaan bumi
-                      setempat.
-                    </td>
-                    <td>Hasil Olah Data DEMNAS BIG</td>
+                    <td>TRI</td>
+                    <td>Tingkat kekasaran permukaan medan.</td>
+                    <td>Olahan DEMNAS BIG</td>
                   </tr>
-
                   <tr>
-                    <td><strong>TWI (Kelembapan Lahan)</strong></td>
-                    <td>Potensi area tanah di lapangan untuk menampung air.</td>
-                    <td>Hasil Olah Data DEMNAS BIG</td>
+                    <td>TWI</td>
+                    <td>Potensi akumulasi air secara topografis.</td>
+                    <td>Olahan DEMNAS BIG</td>
                   </tr>
-
-                  <!-- Akses & Risiko -->
                   <tr>
                     <td rowspan="7"><strong>Akses &amp; Risiko</strong></td>
-                    <td><strong>Jarak ke Jalan</strong></td>
-                    <td>
-                      Jarak posisi rumah/desa menuju koridor jalan utama
-                      terdekat.
-                    </td>
-                    <td>Badan Informasi Geospasial (BIG) &amp; OSM</td>
+                    <td>Jarak ke Jalan</td>
+                    <td>Jarak menuju jaringan jalan.</td>
+                    <td>BIG &amp; OSM</td>
                   </tr>
-
                   <tr>
-                    <td><strong>Jarak ke Sungai</strong></td>
-                    <td>Jarak area hunian ke aliran sungai terdekat.</td>
-                    <td>Badan Informasi Geospasial (BIG)</td>
+                    <td>Jarak ke Sungai</td>
+                    <td>Jarak menuju aliran sungai terdekat.</td>
+                    <td>BIG</td>
                   </tr>
-
                   <tr>
-                    <td><strong>Jarak ke Pantai</strong></td>
-                    <td>Kedekatan wilayah desa dengan garis pantai selatan.</td>
-                    <td>Badan Informasi Geospasial (BIG)</td>
+                    <td>Jarak ke Pantai</td>
+                    <td>Kedekatan terhadap garis pantai.</td>
+                    <td>BIG</td>
                   </tr>
-
                   <tr>
-                    <td><strong>Banjir</strong></td>
-                    <td>Tingkat potensi bahaya luapan air di suatu desa.</td>
-                    <td>Portal inaRISK BNPB Indonesia</td>
+                    <td>Banjir</td>
+                    <td>Tingkat potensi bahaya banjir.</td>
+                    <td>inaRISK BNPB</td>
                   </tr>
-
                   <tr>
-                    <td><strong>Longsor</strong></td>
-                    <td>
-                      Potensi bahaya pergeseran tanah di daerah perbukitan.
-                    </td>
-                    <td>Portal inaRISK BNPB Indonesia</td>
+                    <td>Longsor</td>
+                    <td>Potensi bahaya pergeseran tanah.</td>
+                    <td>inaRISK BNPB</td>
                   </tr>
-
                   <tr>
-                    <td><strong>FWI (Indeks Kebakaran)</strong></td>
-                    <td>
-                      Tingkat kemudahan lingkungan sekitar untuk memicu
-                      kebakaran.
-                    </td>
-                    <td>Satelit Copernicus Eropa (C3S)</td>
+                    <td>FWI</td>
+                    <td>Indeks cuaca terkait potensi kebakaran.</td>
+                    <td>Copernicus C3S</td>
                   </tr>
-
                   <tr>
-                    <td><strong>Tutupan Lahan Terbangun</strong></td>
-                    <td>
-                      Area di desa yang sudah menjadi bangunan atau pemukiman.
-                    </td>
-                    <td>Satelit Landsat 8 (USGS/NASA)</td>
+                    <td>Tutupan Lahan Terbangun</td>
+                    <td>Indikator area terbangun/pemukiman.</td>
+                    <td>Landsat 8 (USGS/NASA)</td>
                   </tr>
-
-                  <!-- Sosial -->
                   <tr>
-                    <td rowspan="2"><strong>Demografi</strong></td>
-                    <td><strong>Rasio Jenis Kelamin</strong></td>
-                    <td>
-                      Perbandingan jumlah warga laki-laki dan perempuan di desa.
-                    </td>
-                    <td>Badan Pusat Statistik (BPS) Pangandaran</td>
+                    <td rowspan="3"><strong>Demografi</strong></td>
+                    <td>Rasio Jenis Kelamin</td>
+                    <td>Perbandingan penduduk laki-laki dan perempuan.</td>
+                    <td>BPS Pangandaran</td>
+                  </tr>
+                  <tr>
+                    <td>Jumlah Penduduk</td>
+                    <td>Total populasi masyarakat pada tingkat desa.</td>
+                    <td>BPS Pangandaran</td>
+                  </tr>
+                  <tr>
+                    <td>Jumlah Faskes & Nakes</td>
+                    <td>Koordinat faskes dan kuota personel medis publik.</td>
+                    <td>Kemenkes RI</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <!-- <p class="dashboard-footer-note">
-              Catatan: sumber, tahun, satuan, dan definisi operasional belum
-              diisi karena informasi tersebut tidak terdapat di file qgis2web.
-            </p> -->
           </div>
 
-          <div class="method-card">
-            <h2>Metode Perhitungan</h2>
-            <!-- <p>
-              Gunakan bagian ini untuk menjelaskan tahapan pengolahan data.
-              Skema berikut merupakan template visual dan dapat disesuaikan
-              dengan prosedur penelitian Anda.
-            </p> -->
-            <div class="method-flow">
-              <div class="method-step">Data</div>
-              <div class="method-step">Pengolahan Variabel</div>
-              <div class="method-step">Multi-Tier E2SFCA</div>
-              <div class="method-step">Random Forest ML</div>
-              <div class="method-step">Analisis LISA</div>
-            </div>
-            <div class="method-card">
-              <h3>Metode Perhitungan E2SFCA</h3>
+          <div class="content-card metode-e2sfca">
+            <h3>Metode Perhitungan</h3>
 
-              <p>
-                Metode
-                <strong
-                  >Enhanced Two-Step Floating Catchment Area (E2SFCA)</strong
-                >
-                digunakan untuk mengukur aksesibilitas spasial masyarakat
-                terhadap fasilitas kesehatan dengan mempertimbangkan
-                ketersediaan fasilitas dan jarak.
-              </p>
+            <p class="metode-pengantar">
+              Metode
+              <strong
+                >Enhanced Two-Step Floating Catchment Area (E2SFCA)</strong
+              >
+              digunakan untuk mengukur aksesibilitas spasial terhadap fasilitas
+              kesehatan dengan mempertimbangkan kapasitas fasilitas, jumlah
+              penduduk, dan jarak.
+            </p>
 
-              <div class="formula-box">
-                <h4>Langkah 1 — Rasio Fasilitas terhadap Penduduk</h4>
+            <!-- LANGKAH 1 -->
+            <div class="formula-box">
+              <h4>Langkah 1 — Rasio Fasilitas terhadap Penduduk</h4>
 
-                <div class="formula">
-                  R<sub>j</sub> =
-                  <span class="fraction">
-                    <span class="numerator">S<sub>j</sub></span>
-                    <span class="denominator">
-                      &sum;<sub>k : d<sub>kj</sub> &le; d<sub>0</sub></sub>
-                      P<sub>k</sub> W(d<sub>kj</sub>)
-                    </span>
-                  </span>
-                </div>
-
-                <div class="formula-description">
-                  <p>
-                    <strong>R<sub>j</sub></strong> = rasio fasilitas kesehatan
-                    pada lokasi j
-                  </p>
-                  <p>
-                    <strong>S<sub>j</sub></strong> = kapasitas fasilitas
-                    kesehatan pada lokasi j
-                  </p>
-                  <p>
-                    <strong>P<sub>k</sub></strong> = jumlah penduduk wilayah k
-                  </p>
-                  <p>
-                    <strong>d<sub>kj</sub></strong> = jarak antara wilayah k dan
-                    fasilitas j
-                  </p>
-                  <p>
-                    <strong>W(d<sub>kj</sub>)</strong> = bobot berdasarkan jarak
-                  </p>
-                  <p>
-                    <strong>d<sub>0</sub></strong> = batas jarak pencarian
-                  </p>
-                </div>
-              </div>
-
-              <div class="formula-box">
-                <h4>Langkah 2 — Indeks Aksesibilitas</h4>
-
-                <div class="formula">
-                  A<sub>i</sub> = &sum;<sub
-                    >j : d<sub>ij</sub> &le; d<sub>0</sub></sub
+              <div class="formula">
+                R<sub>j</sub> =
+                <span class="sum-fraction">
+                  <span class="top">S<sub>j</sub></span>
+                  <span class="bottom"
+                    >&sum; P<sub>k</sub> W(d<sub>kj</sub>)</span
                   >
-                  R<sub>j</sub> W(d<sub>ij</sub>)
-                </div>
-
-                <div class="formula-description">
-                  <p>
-                    <strong>A<sub>i</sub></strong> = nilai aksesibilitas wilayah
-                    i
-                  </p>
-                  <p>
-                    <strong>R<sub>j</sub></strong> = rasio fasilitas dari
-                    langkah pertama
-                  </p>
-                  <p>
-                    <strong>d<sub>ij</sub></strong> = jarak antara wilayah i dan
-                    fasilitas j
-                  </p>
-                  <p>
-                    <strong>W(d<sub>ij</sub>)</strong> = bobot berdasarkan jarak
-                  </p>
-                </div>
+                </span>
               </div>
+
+              <p class="formula-description">
+                <strong>R<sub>j</sub></strong> = rasio fasilitas;
+                <strong>S<sub>j</sub></strong> = kapasitas fasilitas;
+                <strong>P<sub>k</sub></strong> = penduduk;
+                <strong>W(d)</strong> = bobot jarak.
+              </p>
             </div>
-            <!-- <div class="dashboard-note" style="margin-top: 16px">
-              Tambahkan rumus E2SFCA, parameter catchment area, bobot, fungsi
-              jarak, serta prosedur LISA sesuai metode penelitian Anda pada
-              bagian ini.
-            </div> -->
+
+            <!-- LANGKAH 2 -->
+            <div class="formula-box">
+              <h4>Langkah 2 — Indeks Aksesibilitas</h4>
+
+              <div class="formula">
+                A<sub>i</sub> = &sum;<sub
+                  >j : d<sub>ij</sub> &le; d<sub>0</sub></sub
+                >
+                R<sub>j</sub> W(d<sub>ij</sub>)
+              </div>
+
+              <p class="formula-description">
+                <strong>A<sub>i</sub></strong> = indeks aksesibilitas wilayah i
+                dan <strong>d<sub>0</sub></strong> = batas jarak pencarian.
+              </p>
+            </div>
+
+            <!-- ALUR -->
+            <div class="workflow">
+              <div>Data Penduduk + Fasilitas</div>
+              <span>→</span>
+              <div>Rasio Fasilitas</div>
+              <span>→</span>
+              <div>Pembobotan Jarak</div>
+              <span>→</span>
+              <div>Indeks Aksesibilitas</div>
+              <span>→</span>
+              <div>Analisis LISA</div>
+            </div>
           </div>
         </section>
 
@@ -1035,6 +1005,8 @@
                 <option value="pantai">Jarak ke Garis Pantai</option>
                 <option value="fwi">FWI (Fire Weather Index)</option>
                 <option value="tri">TRI (Terrain Ruggedness Index)</option>
+                <option value="faskes">Titik Fasilitas Kesehatan</option>
+                <option value="worldpop">Kepadatan Penduduk WorldPop</option>
               </select>
             </div>
 
@@ -1073,7 +1045,7 @@
                 class="result-tab active"
                 data-result="e2sfca"
               >
-                E2SFCA
+                Indeks Aksesibilitas
               </button>
               <button type="button" class="result-tab" data-result="lisa">
                 LISA
@@ -1081,7 +1053,7 @@
             </div>
 
             <div id="result-e2sfca" class="result-pane active">
-              <div class="result-summary">
+              <!-- <div class="result-summary">
                 <div class="metric">
                   <div class="metric-label">Layer hasil</div>
                   <div class="metric-value">Indeks E2SFCA</div>
@@ -1094,24 +1066,24 @@
                   <div class="metric-label">Legenda</div>
                   <div class="metric-value">Kelas nilai</div>
                 </div>
-              </div>
-              <!-- <div class="kontrol-panel">
-                <label for="pilihHasil">Layer hasil E2SFCA:</label>
-                <select id="pilihHasil">
-                  <option value="indeks" selected>Indeks E2SFCA</option>
-                  <option value="pang">Indeks E2SFCA (Pang)</option>
-                </select>
               </div> -->
-              <div class="deskripsi-panel" style="margin-top: 0">
-                <h3 class="deskripsi-judul">Indeks E2SFCA</h3>
-                <p id="deskripsiE2sfca">
-                  Peta ini menampilkan layer Indeks E2SFCA yang sudah tersedia
-                  pada proyek qgis2web.
-                </p>
+              <div class="kontrol-panel">
+                <label for="pilihHasil"
+                  >Layer Nilai Indeks Aksesibilitas:</label
+                >
+                <select id="pilihHasil">
+                  <option value="indeks" selected>
+                    Indeks Aksesibilitas Per Desa
+                  </option>
+                  <option value="aksesibilitas">Indeks Aksesibilitas</option>
+                </select>
+              </div>
+              <div id="deskripsi-e2sfca-panel" style="display: none">
+                <p id="deskripsiE2sfca"></p>
               </div>
             </div>
 
-            <div id="result-lisa" class="result-pane">
+            <!-- <div id="result-lisa" class="result-pane">
               <div class="result-summary">
                 <div class="metric">
                   <div class="metric-label">Analisis</div>
@@ -1126,13 +1098,230 @@
                   <div class="metric-value">Peta klaster</div>
                 </div>
               </div>
-              <div class="dashboard-note">
-                Layer LISA pada proyek qgis2web memuat kategori High-High,
-                High-Low, Low-High, Low-Low, dan Not Significant.
-              </div>
-            </div>
+            </div> -->
 
             <div id="hasil-map-area" style="margin-top: 16px"></div>
+
+            <div
+              id="hasil-deskripsi-e2sfca"
+              class="deskripsi-panel hasil-keterangan"
+              style="display: none; margin-top: 16px"
+            >
+              <h3 class="deskripsi-judul">Indeks Aksesibilitas</h3>
+              <p id="deskripsiE2sfca-bawah">
+                Nilai yang ditampilkan pada peta merupakan nilai Indeks E2SFCA
+                masing-masing desa. Semakin tinggi nilai indeks, semakin besar
+                kapasitas pelayanan kesehatan yang secara spasial dapat diakses
+                oleh penduduk setelah mempertimbangkan beban penduduk dan waktu
+                tempuh. Sebaliknya, nilai indeks yang rendah menunjukkan wilayah
+                dengan aksesibilitas pelayanan kesehatan yang relatif lebih
+                terbatas.
+              </p>
+            </div>
+            <div
+              id="hasil-deskripsi-lisa"
+              class="deskripsi-panel hasil-keterangan"
+              style="display: none; margin-top: 16px"
+            >
+              <h3 class="deskripsi-judul">Keterangan LISA</h3>
+
+              <p>
+                <strong>LISA (Local Indicators of Spatial Association)</strong>
+                digunakan untuk mengidentifikasi pola pengelompokan spasial
+                nilai <strong>Indeks E2SFCA</strong> pada tingkat desa. Analisis
+                ini membandingkan nilai aksesibilitas suatu desa dengan nilai
+                aksesibilitas desa-desa di sekitarnya sehingga dapat diketahui
+                apakah suatu wilayah membentuk
+                <strong
+                  >klaster aksesibilitas tinggi, klaster aksesibilitas rendah,
+                  atau merupakan pencilan spasial (spatial outlier)</strong
+                >. Dalam penelitian ini, hasil LISA diklasifikasikan menjadi
+                empat kuadran utama, yaitu
+                <strong>High-High, Low-Low, High-Low, dan Low-High</strong>,
+                serta kategori <strong>Not Significant</strong> untuk wilayah
+                yang tidak menunjukkan hubungan spasial yang signifikan.
+              </p>
+
+              <p>
+                <strong>High-High (Hotspot)</strong> menunjukkan desa dengan
+                nilai Indeks E2SFCA tinggi yang dikelilingi oleh desa-desa
+                dengan nilai aksesibilitas tinggi. Pola ini menunjukkan adanya
+                <strong
+                  >pengelompokan wilayah dengan aksesibilitas pelayanan
+                  kesehatan yang relatif baik</strong
+                >. Dalam hasil penelitian, pola High-High terutama
+                terkonsentrasi di kawasan pesisir selatan, termasuk wilayah
+                seperti <strong>Parigi dan Wonoharjo</strong>.
+              </p>
+
+              <p>
+                <strong>Low-Low (Coldspot)</strong> menunjukkan desa dengan
+                nilai Indeks E2SFCA rendah yang dikelilingi oleh desa-desa
+                dengan nilai aksesibilitas rendah. Pola ini menggambarkan
+                <strong
+                  >klaster wilayah dengan keterbatasan aksesibilitas pelayanan
+                  kesehatan</strong
+                >. Dalam penelitian, pola Low-Low banyak ditemukan di kawasan
+                pedalaman bagian utara, khususnya
+                <strong>Langkaplancar</strong>, serta beberapa wilayah di
+                <strong>Kalipucang</strong>.
+              </p>
+
+              <p>
+                <strong>High-Low (Outlier)</strong> menunjukkan desa dengan
+                nilai aksesibilitas tinggi yang berada di antara atau
+                dikelilingi oleh desa-desa dengan nilai aksesibilitas rendah.
+                Kondisi ini merupakan <strong>pencilan spasial</strong>, yang
+                dapat menunjukkan adanya suatu desa dengan kondisi aksesibilitas
+                lebih baik dibandingkan wilayah di sekitarnya.
+              </p>
+
+              <p>
+                <strong>Low-High (Outlier)</strong> menunjukkan desa dengan
+                nilai aksesibilitas rendah yang dikelilingi oleh desa-desa
+                dengan nilai aksesibilitas tinggi. Pola ini juga merupakan
+                pencilan spasial dan dapat menunjukkan
+                <strong
+                  >wilayah yang tertinggal dalam aksesibilitas dibandingkan
+                  lingkungan sekitarnya</strong
+                >.
+              </p>
+
+              <p>
+                <strong>Not Significant</strong> menunjukkan bahwa hubungan
+                spasial lokal antara nilai aksesibilitas suatu desa dengan
+                wilayah di sekitarnya
+                <strong
+                  >tidak cukup kuat secara statistik untuk dikategorikan sebagai
+                  salah satu pola LISA</strong
+                >.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             MENU 4: REKOMENDASI
+             ===================================================== -->
+        <section id="section-rekomendasi" class="dashboard-section">
+          <div class="workspace">
+            <div class="workspace-head">
+              <div>
+                <h2>Rekomendasi</h2>
+                <p>
+                  Peta rekomendasi menampilkan wilayah yang termasuk dalam
+                  rekomendasi.
+                </p>
+              </div>
+              <div class="workspace-badge">Peta Rekomendasi</div>
+            </div>
+
+            <div id="rekomendasi-map-area"></div>
+            <div id="rekomendasi-map-info" class="deskripsi-panel">
+              <h3 class="deskripsi-judul">Peta Rekomendasi</h3>
+              <h4>1. Prioritas I: Desa Pangkalan (Kecamatan Langkaplancar)</h4>
+
+              <p>
+                <strong>Skor Indeks Aktual (A<sub>i</sub>):</strong>
+                0,00194878 (Low-Low <em>Coldspot</em>)
+              </p>
+
+              <p>
+                <strong>Angka Variabel Prediktor:</strong>
+                <strong>Ketinggian Elevasi 7,86%</strong>
+              </p>
+
+              <p>
+                <strong>Justifikasi Spasial Korelatif:</strong>
+                Karakteristik morfologi vertikal pegunungan yang ekstrem ini
+                bertindak sebagai benteng friksi fisis alami (<em
+                  >conditional spatial constraints</em
+                >). Dampak mekanis dari ketinggian tersebut memicu peluruhan
+                bobot kurva Gaussian yang masif dalam rumus hulu E2SFCA Tahap 1,
+                sehingga efisiensi waktu tempuh ambulans gawat darurat menuju
+                Puskesmas Langkaplancar terkerat secara ekstrem melintasi ruang.
+              </p>
+
+              <p>
+                <strong>Rekomendasi:</strong>
+                Pembangunan Unit
+                <strong>Puskesmas Non-Rawat Inap Pembantu Baru</strong>
+              </p>
+
+              <h4>
+                2. Prioritas II: Desa Bojongkondang (Kecamatan Langkaplancar)
+              </h4>
+
+              <p>
+                <strong>Skor Indeks Aktual (A<sub>i</sub>):</strong>
+                0,00213762 (Low-Low <em>Coldspot</em>)
+              </p>
+
+              <p>
+                <strong>Angka Variabel Prediktor:</strong>
+                <strong>Curah hujan 7,22%, Kerawanan Longsor 6,14%</strong>
+              </p>
+
+              <p>
+                <strong>Justifikasi Spasial Korelatif:</strong>
+                Kelumpuhan nilai jangkauan geografis di Desa Bojongkondang
+                dikendalikan secara sensitif oleh interaksi non-linear antara
+                bentang luasan wilayah daratan yang luas melawan kombinasi
+                faktor klimatologi musiman. Ketika baris nilai prediktor bencana
+                geologis dan curah hujan ini diacak (<em>shuffled at random</em
+                >), model Random Forest mendeteksi lonjakan galat kuadrat (<em
+                  >Mean Squared Error</em
+                >) yang pekat. Hal ini membuktikan bahwa friksi fisik akibat
+                kerawanan cuaca musiman secara periodik melumpuhkan konektivitas
+                darat, sehingga menciptakan efek peluruhan jarak (<em
+                  >distance decay</em
+                >) seketika yang gagal diredam oleh prasarana kesehatan
+                eksisting.
+              </p>
+
+              <p>
+                <strong>Rekomendasi:</strong>
+                Pembangunan
+                <strong>Klinik Pratama Rawat Jalan Pemerintah</strong>
+              </p>
+
+              <h4>3. Prioritas III: Desa Bagolo (Kecamatan Kalipucang)</h4>
+
+              <p>
+                <strong>Skor Indeks Aktual (A<sub>i</sub>):</strong>
+                0,00298926 (Low-Low <em>Coldspot</em>)
+              </p>
+
+              <p>
+                <strong>Angka Variabel Prediktor:</strong>
+                <strong
+                  >Kerawanan banjir 6,86%, jarak dari garis pantai 5,45%</strong
+                >
+              </p>
+
+              <p>
+                <strong>Justifikasi Spasial Korelatif:</strong>
+                Desa Bagolo mengunci zona kritis <em>coldspot</em> di perimeter
+                luar tepi pantai timur kabupaten. Meskipun berada di koridor
+                dataran rendah, ancaman hidro-meteorologi banjir secara mekanis
+                memotong aksesibilitas sirkulasi menuju jalan utama. Kondisi
+                isolasi fisis ini diperparah oleh fenomena
+                <strong
+                  >kegagalan kompensasi pasar (<em
+                    >market compensation failure</em
+                  >)</strong
+                >
+                akibat kosongnya faskes swasta komersial (0 unit), sehingga
+                menarik garis kurva sisaan model menjadi bimodal akibat
+                ketergantungan mutlak warga pada pasokan tunggal pemerintah yang
+                letaknya berada di luar radius emas perjalanan darat.
+              </p>
+
+              <p>
+                <strong>Rekomendasi:</strong>
+                Pembangunan <strong>Puskesmas Pembantu Baru</strong>.
+              </p>
+            </div>
           </div>
         </section>
       </main>
@@ -1171,6 +1360,10 @@
     <script src="data/peta_TRI_21.js"></script>
     <script src="data/LISA_22.js"></script>
     <script src="data/Peta_pang_kec_23.js"></script>
+    <script src="data/Data_Faskes_Pangandaran_24.js"></script>
+    <script src="data/batasindeks_26.js"></script>
+    <script src="data/peta_desa_reproject2_1.js"></script>
+    <script src="data/Rekomendasi_2.js"></script>
     <script>
       var highlightLayer;
       function highlightFeature(e) {
@@ -1353,7 +1546,7 @@
 
       function style_peta_curah_hujan_1_0(feature) {
         if (
-          feature.properties["Curah Huja"] >= 7.945991 &&
+          feature.properties["Curah Huja"] >= 7.94599 &&
           feature.properties["Curah Huja"] <= 8.845018
         ) {
           return {
@@ -1756,7 +1949,7 @@
         }
         if (
           feature.properties["Kecepatan"] >= 2.40643 &&
-          feature.properties["Kecepatan"] <= 3.390157
+          feature.properties["Kecepatan"] <= 3.39016
         ) {
           return {
             pane: "pane_peta_windspeed_3",
@@ -2013,7 +2206,7 @@
 
       function style_peta_NO2_5_0(feature) {
         if (
-          feature.properties["NO2"] >= 0.000001 &&
+          feature.properties["NO2"] >= 0.0 &&
           feature.properties["NO2"] <= 0.000005
         ) {
           return {
@@ -2050,7 +2243,7 @@
         }
         if (
           feature.properties["NO2"] >= 0.000008 &&
-          feature.properties["NO2"] <= 0.00001
+          feature.properties["NO2"] <= 0.00002
         ) {
           return {
             pane: "pane_peta_NO2_5",
@@ -2251,7 +2444,7 @@
         }
         if (
           feature.properties["O3"] >= 0.116893 &&
-          feature.properties["O3"] <= 0.117709
+          feature.properties["O3"] <= 0.11771
         ) {
           return {
             pane: "pane_peta_O3_6",
@@ -2343,7 +2536,7 @@
 
       function style_peta_CO_7_0(feature) {
         if (
-          feature.properties["CO"] >= 0.021532 &&
+          feature.properties["CO"] >= 0.02153 &&
           feature.properties["CO"] <= 0.02459
         ) {
           return {
@@ -2508,7 +2701,7 @@
 
       function style_peta_AOD_8_0(feature) {
         if (
-          feature.properties["AOD"] >= -0.156547 &&
+          feature.properties["AOD"] >= -0.1566 &&
           feature.properties["AOD"] <= 0.228326
         ) {
           return {
@@ -2581,7 +2774,7 @@
         }
         if (
           feature.properties["AOD"] >= 0.333851 &&
-          feature.properties["AOD"] <= 0.510628
+          feature.properties["AOD"] <= 0.51063
         ) {
           return {
             pane: "pane_peta_AOD_8",
@@ -2673,7 +2866,7 @@
 
       function style_peta_elevasi_9_0(feature) {
         if (
-          feature.properties["Elevasi"] >= 5.003293 &&
+          feature.properties["Elevasi"] >= 5.0 &&
           feature.properties["Elevasi"] <= 13.746893
         ) {
           return {
@@ -2911,7 +3104,7 @@
         }
         if (
           feature.properties["Slope"] >= 10.788176 &&
-          feature.properties["Slope"] <= 18.627609
+          feature.properties["Slope"] <= 18.7
         ) {
           return {
             pane: "pane_peta_slope_10",
@@ -3406,7 +3599,7 @@
         }
         if (
           feature.properties["Jarak ke J"] >= 918.964392 &&
-          feature.properties["Jarak ke J"] <= 2212.393066
+          feature.properties["Jarak ke J"] <= 2213
         ) {
           return {
             pane: "pane_peta_jalan_13",
@@ -4306,7 +4499,7 @@
         }
         if (
           feature.properties["FWI"] >= 0.211145 &&
-          feature.properties["FWI"] <= 0.235547
+          feature.properties["FWI"] <= 0.24
         ) {
           return {
             pane: "pane_peta_FWI_19",
@@ -4435,7 +4628,7 @@
         }
         if (
           feature.properties["Indeks E2S"] >= 0.003827 &&
-          feature.properties["Indeks E2S"] <= 0.004829
+          feature.properties["Indeks E2S"] <= 0.00484
         ) {
           return {
             pane: "pane_peta_indeks_20",
@@ -4527,7 +4720,7 @@
 
       function style_peta_TRI_21_0(feature) {
         if (
-          feature.properties["TRI"] >= 1.154042 &&
+          feature.properties["TRI"] >= 1.154 &&
           feature.properties["TRI"] <= 1.932834
         ) {
           return {
@@ -5040,120 +5233,448 @@
       // LOGIKA DASHBOARD 3 MENU + PETA QGIS2WEB
       // =========================================================================================
 
+      // ============================================================
+      // LAYER TAMBAHAN: FASILITAS KESEHATAN
+      // ============================================================
+      function pop_Data_Faskes_Pangandaran_24(feature, layer) {
+        layer.on({
+          mouseout: function (e) {
+            if (typeof layer.closePopup == "function") {
+              layer.closePopup();
+            } else {
+              layer.eachLayer(function (feature) {
+                feature.closePopup();
+              });
+            }
+          },
+          mouseover: highlightFeature,
+        });
+
+        var popupContent =
+          "<table>" +
+          "<tr><td>ID Faskes</td><td>" +
+          (feature.properties["ID_Faskes"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Nama Faskes</td><td>" +
+          (feature.properties["Nama_Faskes"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Latitude</td><td>" +
+          (feature.properties["Latitude"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Longitude</td><td>" +
+          (feature.properties["Longitude"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Jenis Faskes</td><td>" +
+          (feature.properties["Jenis_Faskes"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Jumlah Nakes</td><td>" +
+          (feature.properties["Jumlah_Nakes"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Status</td><td>" +
+          (feature.properties["Status_Faskes"] ?? "") +
+          "</td></tr>" +
+          "</table>";
+
+        var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+        layer.on("popupopen", function (e) {
+          addClassToPopupIfMedia(content, e.popup);
+        });
+        layer.bindPopup(content, { maxHeight: 400 });
+      }
+
+      function style_Data_Faskes_Pangandaran_24_0(feature) {
+        switch (String(feature.properties["Status_Faskes"])) {
+          case "Pemerintah":
+            return {
+              pane: "pane_Data_Faskes_Pangandaran_24",
+              radius: 4.0,
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(225,70,56,1.0)",
+              interactive: true,
+            };
+          case "Swasta":
+            return {
+              pane: "pane_Data_Faskes_Pangandaran_24",
+              radius: 4.0,
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(52,214,63,1.0)",
+              interactive: true,
+            };
+          default:
+            return {
+              pane: "pane_Data_Faskes_Pangandaran_24",
+              radius: 4.0,
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              weight: 1,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(100,100,100,1.0)",
+              interactive: true,
+            };
+        }
+      }
+
+      map.createPane("pane_Data_Faskes_Pangandaran_24");
+      map.getPane("pane_Data_Faskes_Pangandaran_24").style.zIndex = 424;
+      map.getPane("pane_Data_Faskes_Pangandaran_24").style["mix-blend-mode"] =
+        "normal";
+
+      var layer_Data_Faskes_Pangandaran_24 = new L.geoJson(
+        json_Data_Faskes_Pangandaran_24,
+        {
+          attribution: "",
+          interactive: true,
+          dataVar: "json_Data_Faskes_Pangandaran_24",
+          layerName: "layer_Data_Faskes_Pangandaran_24",
+          pane: "pane_Data_Faskes_Pangandaran_24",
+          onEachFeature: pop_Data_Faskes_Pangandaran_24,
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(
+              latlng,
+              style_Data_Faskes_Pangandaran_24_0(feature),
+            );
+          },
+        },
+      );
+      bounds_group.addLayer(layer_Data_Faskes_Pangandaran_24);
+
+      // ============================================================
+      // LAYER TAMBAHAN: PETA DESA (DI BAWAH TITIK FASKES)
+      // ============================================================
+      // Batas desa dari qgis2web baru, dipakai khusus sebagai batas di bawah titik faskes.
+      map.createPane("pane_batasindeks_faskes");
+      map.getPane("pane_batasindeks_faskes").style.zIndex = 423;
+      map.getPane("pane_batasindeks_faskes").style["mix-blend-mode"] = "normal";
+
+      var layer_batasindeks_faskes = new L.geoJson(json_batasindeks_26, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_batasindeks_26",
+        layerName: "layer_batasindeks_faskes",
+        pane: "pane_batasindeks_faskes",
+        onEachFeature: pop_batasindeks_26,
+        style: style_batasindeks_26_0,
+      });
+      bounds_group.addLayer(layer_batasindeks_faskes);
+
+      // ============================================================
+      // LAYER TAMBAHAN: INDEKS AKSESIBILITAS + BATAS-INDEKS
+      // ============================================================
+      function pop_batasindeks_26(feature, layer) {
+        var popupContent =
+          "<table>" +
+          "<tr><td>Nama Objek</td><td>" +
+          (feature.properties["NAMOBJ"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Kecamatan</td><td>" +
+          (feature.properties["WADMKC"] ?? "") +
+          "</td></tr>" +
+          "<tr><td>Desa/Kelurahan</td><td>" +
+          (feature.properties["WADMKD"] ?? "") +
+          "</td></tr>" +
+          "</table>";
+        layer.bindPopup(popupContent, { maxHeight: 400 });
+      }
+
+      function style_batasindeks_26_0() {
+        return {
+          pane: "pane_batasindeks_26",
+          opacity: 1,
+          color: "rgba(35,35,35,1.0)",
+          dashArray: "",
+          lineCap: "butt",
+          lineJoin: "miter",
+          weight: 1.2,
+          fill: false,
+          fillOpacity: 0,
+          fillColor: "rgba(255,255,255,0)",
+          interactive: true,
+        };
+      }
+
+      map.createPane("pane_IndeksAksesibilitas_25");
+      map.getPane("pane_IndeksAksesibilitas_25").style.zIndex = 425;
+
+      var img_IndeksAksesibilitas_25 = "data/IndeksAksesibilitas_25.png";
+      var img_bounds_IndeksAksesibilitas_25 = [
+        [-7.823006595849936, 108.31240053599726],
+        [-7.45884252573571, 108.8022525549184],
+      ];
+
+      var layer_IndeksAksesibilitas_25 = new L.imageOverlay(
+        img_IndeksAksesibilitas_25,
+        img_bounds_IndeksAksesibilitas_25,
+        {
+          pane: "pane_IndeksAksesibilitas_25",
+          opacity: 0.8,
+        },
+      );
+      bounds_group.addLayer(layer_IndeksAksesibilitas_25);
+
+      map.createPane("pane_batasindeks_26");
+      map.getPane("pane_batasindeks_26").style.zIndex = 426;
+      map.getPane("pane_batasindeks_26").style["mix-blend-mode"] = "normal";
+
+      var layer_batasindeks_26 = new L.geoJson(json_batasindeks_26, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_batasindeks_26",
+        layerName: "layer_batasindeks_26",
+        pane: "pane_batasindeks_26",
+        onEachFeature: pop_batasindeks_26,
+        style: style_batasindeks_26_0,
+      });
+      bounds_group.addLayer(layer_batasindeks_26);
+
+      // ============================================================
+      // LAYER TAMBAHAN: WORLDPOP
+      // ============================================================
+      map.createPane("pane_WorldPop_Kepadatan_Penduduk_30m_28");
+      map.getPane("pane_WorldPop_Kepadatan_Penduduk_30m_28").style.zIndex = 425;
+
+      var img_WorldPop_Kepadatan_Penduduk_30m_28 =
+        "data/WorldPop_Kepadatan_Penduduk_30m_28.png";
+
+      var img_bounds_WorldPop_Kepadatan_Penduduk_30m_28 = [
+        [-7.823006595849936, 108.31240053599726],
+        [-7.45884252573571, 108.8022525549184],
+      ];
+
+      var layer_WorldPop_Kepadatan_Penduduk_30m_28 = new L.imageOverlay(
+        img_WorldPop_Kepadatan_Penduduk_30m_28,
+        img_bounds_WorldPop_Kepadatan_Penduduk_30m_28,
+        {
+          pane: "pane_WorldPop_Kepadatan_Penduduk_30m_28",
+          opacity: 0.7,
+        },
+      );
+      bounds_group.addLayer(layer_WorldPop_Kepadatan_Penduduk_30m_28);
+
+      // ---------------------------------------------------------
+      // LAYER REKOMENDASI (data qgis2web baru)
+      // Urutan z-index: Google Road (400) -> Desa (401) -> Rekomendasi (402)
+      // ---------------------------------------------------------
+      map.createPane("pane_peta_desa_reproject2_1");
+      map.getPane("pane_peta_desa_reproject2_1").style.zIndex = 401;
+      map.getPane("pane_peta_desa_reproject2_1").style["mix-blend-mode"] =
+        "normal";
+
+      function pop_peta_desa_reproject2_1(feature, layer) {
+        var p = feature.properties || {};
+        var html =
+          "<table>" +
+          "<tr><th>Desa</th><td>" +
+          (p.NAMOBJ || "-") +
+          "</td></tr>" +
+          "<tr><th>Kecamatan</th><td>" +
+          (p.WADMKC || "-") +
+          "</td></tr>" +
+          "<tr><th>Jumlah Faskes</th><td>" +
+          (p.Jumlah_Fas || "-") +
+          "</td></tr>" +
+          "<tr><th>Kepadatan</th><td>" +
+          (p.Kepadatan_ ?? "-") +
+          "</td></tr>" +
+          "<tr><th>Jumlah Penduduk</th><td>" +
+          (p.Jumlah_Pen || "-") +
+          "</td></tr>" +
+          "</table>";
+        layer.bindPopup(html);
+      }
+
+      var layer_peta_desa_reproject2_1 = new L.geoJson(
+        json_peta_desa_reproject2_1,
+        {
+          pane: "pane_peta_desa_reproject2_1",
+          onEachFeature: pop_peta_desa_reproject2_1,
+          style: function () {
+            return {
+              color: "#334155",
+              weight: 1.2,
+              opacity: 0.9,
+              fillColor: "#ffffff",
+              fillOpacity: 0.03,
+              interactive: true,
+            };
+          },
+        },
+      );
+      bounds_group.addLayer(layer_peta_desa_reproject2_1);
+
+      map.createPane("pane_Rekomendasi_2");
+      map.getPane("pane_Rekomendasi_2").style.zIndex = 402;
+      map.getPane("pane_Rekomendasi_2").style["mix-blend-mode"] = "normal";
+
+      function pop_Rekomendasi_2(feature, layer) {
+        var p = feature.properties || {};
+        var html =
+          "<table>" +
+          "<tr><th>Desa Rekomendasi</th><td>" +
+          (p.NAMOBJ || "-") +
+          "</td></tr>" +
+          "<tr><th>Kecamatan</th><td>" +
+          (p.WADMKC || "-") +
+          "</td></tr>" +
+          "<tr><th>Kuadran LISA</th><td>" +
+          (p.Kuadran_LI || "-") +
+          "</td></tr>" +
+          "<tr><th>Jumlah Faskes</th><td>" +
+          (p.Jumlah_Fas || "-") +
+          "</td></tr>" +
+          "</table>";
+        layer.bindPopup(html);
+      }
+
+      var layer_Rekomendasi_2 = new L.geoJson(json_Rekomendasi_2, {
+        pane: "pane_Rekomendasi_2",
+        onEachFeature: pop_Rekomendasi_2,
+        style: function () {
+          return {
+            color: "#dc2626",
+            weight: 2.5,
+            opacity: 1,
+            fillColor: "#ef4444",
+            fillOpacity: 0.42,
+            interactive: true,
+          };
+        },
+      });
+      bounds_group.addLayer(layer_Rekomendasi_2);
+
+      var layer_RekomendasiGabungan = L.layerGroup([
+        layer_peta_desa_reproject2_1,
+        layer_Rekomendasi_2,
+      ]);
+
       var petaData = {
         curah_hujan: {
           judul: "Curah Hujan",
           layer: layer_peta_curah_hujan_1,
           deskripsi:
-            "Variabel ini menunjukkan intensitas Curah Hujan di wilayah tersebut. Warna yang lebih pekat menunjukkan curah hujan yang lebih tinggi.",
+            "Variabel ini menunjukkan intensitas Curah Hujan di wilayah tersebut. Warna yang lebih pekat menunjukkan curah hujan yang lebih tinggi. Dalam data desa, nilai curah hujan berkisar antara 7,95 mm/hari di Desa Sukaresik sebagai nilai terendah hingga 12,03 mm/hari di Desa Bojongkondang sebagai nilai tertinggi. Variasi curah hujan ini menggambarkan perbedaan kondisi hidrometeorologis antarwilayah di Kabupaten Pangandaran.",
         },
         ndvi: {
           judul: "NDVI (Normalized Difference Vegetation Index)",
           layer: layer_peta_ndvi_2,
           deskripsi:
-            "Variabel ini menunjukkan tingkat kerapatan atau kehijauan vegetasi. Semakin hijau warnanya, semakin lebat tutupan vegetasinya.",
+            "Normalized Difference Vegetation Index (NDVI) merupakan indeks yang menggambarkan tingkat kehijauan dan kerapatan vegetasi suatu wilayah. Nilai NDVI yang lebih tinggi menunjukkan kondisi vegetasi yang relatif lebih rapat, sedangkan nilai yang lebih rendah menunjukkan vegetasi yang lebih jarang atau permukaan nonvegetasi. Pada data desa, nilai NDVI terendah sebesar 0,276 di Desa Sukanagara, sedangkan nilai tertinggi sebesar 0,697 di Desa Bojongsari.",
         },
         windspeed: {
           judul: "Kecepatan Angin",
           layer: layer_peta_windspeed_3,
           deskripsi:
-            "Variabel ini memetakan rata-rata kecepatan angin di area studi.",
+            "Kecepatan angin menunjukkan laju pergerakan angin di wilayah kajian dan digunakan sebagai salah satu indikator kondisi atmosfer. Variabel ini dapat menggambarkan perbedaan karakteristik meteorologis antarwilayah. Nilai kecepatan angin terendah dalam data adalah 0,77 m/s di Desa Sindangjaya, sedangkan nilai tertinggi mencapai 3,39 m/s di Desa Legokjawa.",
         },
         so2: {
           judul: "Konsentrasi SO2",
           layer: layer_peta_SO2_4,
           deskripsi:
-            "Peta ini menampilkan sebaran polutan Sulfur Dioksida (SO2) di udara.",
+            "Sulfur Dioksida (SO₂) menunjukkan kerapatan kolom vertikal gas SO₂ yang diperoleh dari data atmosferik satelit. Variabel ini digunakan sebagai indikator kondisi pencemaran atmosfer dan aktivitas antropogenik di wilayah kajian. Pada data desa, nilai SO₂ berkisar dari −0,000203 mol/m² di Kecamatan Kalipucang hingga 0,000255 mol/m² di Desa Jadikarya. Nilai negatif pada hasil raster tidak diartikan sebagai ketiadaan SO₂, tetapi merupakan bagian dari nilai hasil pengolahan data atmosferik.",
         },
         no2: {
           judul: "Konsentrasi NO2",
           layer: layer_peta_NO2_5,
           deskripsi:
-            "Peta ini menampilkan sebaran polutan Nitrogen Dioksida (NO2).",
+            "Nitrogen Dioksida (NO₂) merupakan indikator kondisi atmosfer yang merepresentasikan kerapatan kolom vertikal NO₂. Variabel ini dapat digunakan sebagai proksi keberadaan aktivitas antropogenik dan emisi yang berkaitan dengan transportasi maupun aktivitas lainnya. Nilai NO₂ terendah tercatat sebesar 1,33 × 10⁻⁶ mol/m² di Desa Jayasari, sedangkan nilai tertinggi sebesar 1,87 × 10⁻⁵ mol/m² di Desa Kertajaya.",
         },
         o3: {
           judul: "Konsentrasi Ozon (O3)",
           layer: layer_peta_O3_6,
           deskripsi:
-            "Peta ini menunjukkan konsentrasi Ozon permukaan (Ground Level Ozone).",
+            "Ozon (O₃) merupakan salah satu komponen atmosfer yang digunakan untuk menggambarkan kondisi kualitas atmosfer di wilayah kajian. Data yang digunakan merepresentasikan kerapatan kolom vertikal O₃. Nilai O₃ dalam data desa relatif sempit, dengan nilai terendah sebesar 0,116 mol/m² di Desa Cibogo dan nilai tertinggi sebesar 0,118 mol/m² di Desa Bojong.",
         },
         co: {
           judul: "Konsentrasi CO",
           layer: layer_peta_CO_7,
           deskripsi:
-            "Peta ini menunjukkan tingkat Karbon Monoksida (CO) di udara.",
+            "Karbon Monoksida (CO) merupakan parameter atmosfer yang merepresentasikan kerapatan kolom vertikal CO dan digunakan sebagai salah satu indikator kondisi pencemaran atmosfer. Nilai CO terendah dalam data tercatat sebesar 0,0215 mol/m² di Desa Karangkamiri, sedangkan nilai tertinggi sebesar 0,0285 mol/m² di Desa Kertamukti. Perbedaan nilai tersebut menunjukkan variasi kondisi atmosfer antarwilayah.",
         },
         aod: {
           judul: "Aerosol Optical Depth (AOD)",
           layer: layer_peta_AOD_8,
           deskripsi:
-            "Variabel AOD digunakan untuk memantau kualitas udara dan sebaran partikel aerosol/debu.",
+            "Aerosol Optical Depth (AOD) merupakan indeks yang menggambarkan tingkat keberadaan aerosol atau partikel di atmosfer berdasarkan tingkat penghamburan dan penyerapan radiasi. AOD tidak memiliki satuan fisik langsung dan digunakan sebagai indikator kondisi aerosol atmosfer. Nilai AOD terendah sebesar −0,157 di Desa Bojongkondang, sedangkan nilai tertinggi sebesar 0,511 di Kecamatan Kalipucang. Nilai negatif merupakan hasil pengolahan data raster dan tidak secara langsung diartikan sebagai tidak adanya aerosol.",
         },
         elevasi: {
           judul: "Elevasi (Ketinggian)",
           layer: layer_peta_elevasi_9,
           deskripsi:
-            "Variabel ini menunjukkan tingkat ketinggian wilayah di atas permukaan laut.",
+            "Elevasi menunjukkan ketinggian permukaan wilayah terhadap muka laut rata-rata dan digunakan untuk menggambarkan karakteristik topografi Kabupaten Pangandaran. Berdasarkan data desa, elevasi terendah sebesar 5,00 mdpl di Desa Pananjung, sedangkan elevasi tertinggi mencapai 683,04 mdpl di Desa Bojongkondang. Perbedaan elevasi mencerminkan variasi bentang alam antara wilayah pesisir, dataran rendah, dan wilayah yang lebih tinggi.",
         },
         slope: {
           judul: "Slope (Kemiringan Lereng)",
           layer: layer_peta_slope_10,
           deskripsi:
-            "Peta ini menggambarkan derajat kemiringan permukaan lahan.",
+            "Slope menunjukkan tingkat kemiringan permukaan tanah dan dinyatakan dalam derajat. Variabel ini menggambarkan karakteristik topografi yang dapat memengaruhi kondisi lingkungan, aksesibilitas, serta potensi hambatan pergerakan di suatu wilayah. Nilai slope terendah sebesar 1,78° di Desa Karangpawitan, sedangkan nilai tertinggi sebesar 18,63° di Desa Mekarwangi.",
         },
         twi: {
           judul: "Topographic Wetness Index (TWI)",
           layer: layer_peta_TWI_11,
           deskripsi:
-            "TWI menggambarkan akumulasi aliran permukaan dan tingkat kebasahan tanah secara topografis.",
+            "Topographic Wetness Index (TWI) merupakan indeks topografi yang digunakan untuk menggambarkan kecenderungan suatu lokasi dalam menerima dan mengakumulasi air berdasarkan karakteristik topografinya. Nilai TWI terendah sebesar 6,39 di Desa Mekarwangi, sedangkan nilai tertinggi sebesar 14,39 di Desa Cibenda. Variasi nilai tersebut menunjukkan perbedaan kondisi topografis yang berkaitan dengan potensi akumulasi air antarwilayah.",
         },
         sungai: {
           judul: "Jarak ke Sungai",
           layer: layer_peta_sungai_12,
           deskripsi:
-            "Variabel ini mengukur kedekatan suatu area terhadap aliran sungai.",
+            "Jarak ke sungai menunjukkan jarak spasial suatu wilayah terhadap aliran sungai terdekat dan dinyatakan dalam meter. Variabel ini digunakan untuk menggambarkan hubungan spasial wilayah terhadap jaringan hidrologi. Nilai jarak terdekat tercatat sebesar 281,36 m di Desa Mekarwangi, sedangkan jarak terjauh mencapai 4.085,34 m di Desa Legokjawa.",
         },
         jalan: {
           judul: "Jarak ke Jalan Utama",
           layer: layer_peta_jalan_13,
           deskripsi:
-            "Menggambarkan aksesibilitas wilayah diukur dari jaraknya ke jaringan jalan utama.",
+            "Jarak ke jalan utama menunjukkan jarak spasial wilayah terhadap jaringan jalan utama dan digunakan sebagai salah satu indikator keterhubungan serta kemudahan aksesibilitas wilayah. Nilai terendah sebesar 160,75 m di Desa Bagolo, sedangkan nilai tertinggi mencapai 2.212,39 m di Desa Sukahurip. Semakin besar jarak menunjukkan lokasi yang relatif lebih jauh dari jaringan jalan utama.",
         },
         banjir: {
           judul: "Kerawanan Banjir",
           layer: layer_peta_banjir_14,
           deskripsi:
-            "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap bencana banjir.",
+            "Kerawanan banjir merupakan indeks yang menggambarkan tingkat kerentanan suatu wilayah terhadap kejadian banjir berdasarkan data spasial yang digunakan dalam penelitian. Nilai yang lebih tinggi menunjukkan tingkat kerawanan yang relatif lebih besar. Pada data desa, nilai terendah sebesar 0,002 di Desa Masawah, sedangkan nilai tertinggi sebesar 0,839 di Desa Ciganjeng.",
         },
         longsor: {
           judul: "Kerawanan Longsor",
           layer: layer_peta_longsor_15,
           deskripsi:
-            "Peta ini menampilkan tingkat kerawanan suatu daerah terhadap pergerakan tanah atau tanah longsor.",
+            "Kerawanan longsor merupakan indeks yang menggambarkan tingkat kerentanan wilayah terhadap potensi kejadian longsor. Nilai indeks yang lebih tinggi menunjukkan tingkat kerawanan yang relatif lebih besar. Dalam data desa, nilai terendah adalah 0,00 di Desa Babakan, sedangkan nilai tertinggi adalah 1,00 di Desa Bangunjaya.",
         },
         ndbi: {
           judul: "NDBI (Tutupan Lahan Terbangun)",
           layer: layer_peta_ndbi_16,
           deskripsi:
-            "Normalized Difference Built-up Index (NDBI) digunakan untuk memetakan luasan area perkotaan atau lahan terbangun.",
+            "Tutupan lahan terbangun merupakan indikator yang menggambarkan keberadaan atau tingkat perkembangan permukaan terbangun berdasarkan pengolahan citra Landsat. Variabel ini digunakan untuk merepresentasikan karakteristik penggunaan lahan dan tingkat perkembangan kawasan. Nilai terendah dalam data tercatat sebesar −0,784 di Desa Pananjung, sedangkan nilai tertinggi sebesar 1,00 di Desa Babakan. Nilai tersebut merupakan hasil indeks/pengolahan raster sehingga tidak secara langsung diinterpretasikan sebagai persentase luas bangunan.",
         },
         jk: {
           judul: "Rasio Jenis Kelamin",
           layer: layer_peta_jk_17,
           deskripsi:
-            "Menunjukkan perbandingan jumlah penduduk laki-laki terhadap penduduk perempuan (Sex Ratio).",
+            "Sex Ratio menunjukkan perbandingan jumlah penduduk laki-laki terhadap penduduk perempuan, yang dinyatakan sebagai jumlah laki-laki per 100 perempuan. Nilai terendah dalam data adalah 93,19 di Desa Bojongsari, sedangkan nilai tertinggi sebesar 108,36 di Desa Jayasari. Nilai di bawah 100 menunjukkan jumlah penduduk perempuan relatif lebih besar, sedangkan nilai di atas 100 menunjukkan jumlah penduduk laki-laki relatif lebih besar.",
         },
         pantai: {
           judul: "Jarak ke Garis Pantai",
           layer: layer_peta_pantai_18,
           deskripsi:
-            "Variabel jarak absolut (dalam meter/km) dari daratan ke wilayah pesisir atau garis pantai.",
+            "Jarak ke garis pantai menunjukkan jarak spasial suatu wilayah terhadap garis pantai dan dinyatakan dalam meter. Variabel ini digunakan untuk menggambarkan posisi relatif wilayah terhadap kawasan pesisir. Nilai terdekat terhadap garis pantai tercatat sebesar 313,21 m di Desa Pangandaran, sedangkan nilai terjauh mencapai 26.708,18 m di Desa Pangkalan.",
         },
         fwi: {
           judul: "Fire Weather Index (FWI)",
           layer: layer_peta_FWI_19,
           deskripsi:
-            "Menunjukkan tingkat kerawanan cuaca terhadap kejadian kebakaran hutan dan lahan.",
+            "Fire Weather Index (FWI) merupakan indeks yang digunakan untuk menggambarkan kondisi cuaca yang berkaitan dengan potensi dan perilaku kebakaran lahan atau vegetasi. Nilai FWI terendah dalam data tercatat sebesar 0,162 di Desa Masawah, sedangkan nilai tertinggi sebesar 0,236 di Desa Pamotan. Variasi nilai ini menunjukkan adanya perbedaan kondisi meteorologis yang berkaitan dengan potensi kebakaran antarwilayah.",
         },
         pang: {
           judul: "Indeks E2SFCA (Pang)",
@@ -5171,13 +5692,46 @@
           judul: "Terrain Ruggedness Index (TRI)",
           layer: layer_peta_TRI_21,
           deskripsi:
-            "Mengukur tingkat kekasaran bentuk muka bumi atau morfologi (Ruggedness).",
+            "Terrain Ruggedness Index (TRI) merupakan indeks yang menggambarkan tingkat kekasaran atau ketidakrataan medan. Nilai yang lebih tinggi menunjukkan medan yang relatif lebih kasar dan memiliki variasi elevasi yang lebih besar. Dalam data desa, nilai TRI terendah sebesar 1,15 di Desa Karangpawitan, sedangkan nilai tertinggi sebesar 7,89 di Desa Mekarwangi.",
         },
         lisa: {
           judul: "LISA (Hotspot/Coldspot)",
           layer: layer_LISA_22,
           deskripsi:
             "Peta signifikansi spasial lokal. Kategori yang tersedia: High-High, High-Low, Low-High, Low-Low, dan Not Significant.",
+        },
+        faskes: {
+          judul: "Titik Fasilitas Kesehatan + Batas Desa",
+          layer: L.layerGroup([
+            layer_batasindeks_faskes,
+            layer_Data_Faskes_Pangandaran_24,
+          ]),
+          deskripsi:
+            "Peta ini menunjukkan persebaran fasilitas kesehatan di Kabupaten Pangandaran. Batas desa ditampilkan di bawah titik fasilitas kesehatan agar lokasi faskes dapat langsung dilihat berada di desa mana. Titik merah menunjukkan fasilitas kesehatan pemerintah, sedangkan titik hijau menunjukkan fasilitas kesehatan swasta.",
+        },
+        aksesibilitas: {
+          judul: "Indeks Aksesibilitas + Batas-Indeks",
+          layer: L.layerGroup([
+            layer_IndeksAksesibilitas_25,
+            layer_batasindeks_26,
+          ]),
+          deskripsi:
+            "Peta ini menampilkan PNG Indeks Aksesibilitas dari proyek qgis2web dengan batas-indeks ditampilkan di atasnya agar pembagian wilayah indeks lebih mudah dibaca.",
+        },
+        worldpop: {
+          judul: "Kepadatan Penduduk WorldPop + Batas-Indeks",
+          layer: L.layerGroup([
+            layer_WorldPop_Kepadatan_Penduduk_30m_28,
+            layer_batasindeks_26,
+          ]),
+          deskripsi:
+            "Peta ini menunjukkan kepadatan penduduk berdasarkan data WorldPop dengan resolusi spasial 30 meter. Batas-indeks ditampilkan di atas raster WorldPop agar batas wilayah terlihat dengan jelas.",
+        },
+        rekomendasi: {
+          judul: "Peta Rekomendasi",
+          layer: layer_RekomendasiGabungan,
+          deskripsi:
+            "Peta ini menggunakan data qgis2web baru. Google Road menjadi dasar peta, peta_desa_reproject2_1 ditampilkan di atasnya sebagai batas desa, dan Rekomendasi_2 ditampilkan paling atas untuk menyorot tiga desa rekomendasi.",
         },
       };
 
@@ -5568,6 +6122,13 @@
         },
       };
 
+      legendaData.faskes = {
+        judul: "Status Fasilitas Kesehatan",
+        labels: ["Pemerintah", "Swasta"],
+        colors: ["rgba(225,70,56,1.0)", "rgba(52,214,63,1.0)"],
+        categorical: true,
+      };
+
       var semuaLayerPeta = [];
       for (var namaPeta in petaData) {
         if (
@@ -5587,6 +6148,7 @@
       var mapEl = document.getElementById("map");
       var mapHome = mapEl.parentNode;
       var hasilMapArea = document.getElementById("hasil-map-area");
+      var rekomendasiMapArea = document.getElementById("rekomendasi-map-area");
 
       function escapeHtml(value) {
         return String(value)
@@ -5722,6 +6284,11 @@
 
           // Otomatis tampilkan E2SFCA
           tampilkanHasil("e2sfca");
+        } else if (id === "rekomendasi") {
+          // Peta rekomendasi menggunakan map yang sama, tetapi hanya
+          // layer rekomendasi yang ditampilkan.
+          pindahkanMapKe(rekomendasiMapArea);
+          tampilkanPeta("rekomendasi");
         }
 
         setTimeout(function () {
@@ -5732,6 +6299,18 @@
       }
 
       function tampilkanHasil(mode) {
+        document
+          .querySelectorAll(".hasil-keterangan")
+          .forEach(function (panel) {
+            panel.style.display = "none";
+          });
+        var keteranganE2 = document.getElementById("hasil-deskripsi-e2sfca");
+        var keteranganLisa = document.getElementById("hasil-deskripsi-lisa");
+        if (mode === "e2sfca" && keteranganE2)
+          keteranganE2.style.display = "block";
+        if (mode === "lisa" && keteranganLisa)
+          keteranganLisa.style.display = "block";
+
         document.querySelectorAll(".result-tab").forEach(function (tab) {
           tab.classList.toggle(
             "active",
