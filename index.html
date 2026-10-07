@@ -87,6 +87,34 @@
         box-sizing: border-box;
       }
 
+      #legendaPeta .legenda-gradient-vertical {
+        width: 24px;
+        height: 145px;
+        border-radius: 2px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        background: linear-gradient(
+          to top,
+          rgba(255, 255, 102, 1) 0%,
+          rgba(255, 0, 0, 1) 100%
+        );
+        box-sizing: border-box;
+      }
+
+      #legendaPeta .legenda-vertical-wrap {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      #legendaPeta .legenda-vertical-label {
+        height: 145px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 12px;
+        line-height: 1;
+      }
+
       /* Sembunyikan kontrol layer bawaan qgis2web (ikon tumpukan layer). */
       .leaflet-control-layers,
       .leaflet-control-layers-toggle {
@@ -6120,6 +6148,30 @@
           ],
           categorical: true,
         },
+        worldpop: {
+          judul: "Kepadatan Penduduk WorldPop",
+          labels: ["0", "8.309303"],
+          colors: [
+            "rgba(255,255,102,1.0)",
+            "rgba(255,210,80,1.0)",
+            "rgba(255,160,50,1.0)",
+            "rgba(255,90,30,1.0)",
+            "rgba(220,0,0,1.0)",
+          ],
+          categorical: false,
+          gradient: true,
+        },
+        aksesibilitas: {
+          judul: "Indeks Aksesibilitas",
+          labels: ["0", "0.002462", "0.004924"],
+          colors: [
+            "rgba(220,0,0,1.0)",
+            "rgba(255,255,170,1.0)",
+            "rgba(20,150,60,1.0)",
+          ],
+          categorical: false,
+          gradient: true,
+        },
       };
 
       legendaData.faskes = {
@@ -6181,6 +6233,25 @@
               "</span></div>";
           }
           htmlLegenda += "</div>";
+        } else if (info.gradient) {
+          // Gradasi kontinu khusus WorldPop dan Indeks Aksesibilitas
+          htmlLegenda +=
+            '<div class="legenda-gradient" style="' +
+            "background: linear-gradient(to right, " +
+            info.colors.join(",") +
+            ");" +
+            '"></div>';
+
+          var minValue = info.labels[0];
+
+          var maxValue = info.labels[info.labels.length - 1];
+
+          htmlLegenda +=
+            '<div class="legenda-nilai"><span>' +
+            escapeHtml(minValue) +
+            "</span><span>" +
+            escapeHtml(maxValue) +
+            "</span></div>";
         } else {
           var stops = [];
           var n = info.colors.length;
